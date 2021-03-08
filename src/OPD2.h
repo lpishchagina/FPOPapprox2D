@@ -32,18 +32,19 @@ private:
   std::list<DiskDp> list_disks;                      //list of disks
 public:
   //------------------------------constructor-------------------------------------//
-  OPD2(){}
+  OPD2<GeomX>(){}
   
-  OPD2(std::vector<double>& x1, std::vector<double>& x2, double beta){
+  OPD2<GeomX> (std::vector<double>& x1, std::vector<double>& x2, double beta){
     unsigned int dim = 2;
     penalty = beta;
     n = x1.size();
     sx12 = new double*[n+1]; 
     for(unsigned int i = 0; i < n+1; i++) {sx12[i] = new double[2*dim];}
     m = new double[n + 1];        // "globalCost" = m[n+1] - chpts.size()*penalty
-  }
+  }  
+ 
   //---------------------------------destructor-----------------------------------//
-  ~OPD2(){
+  ~OPD2<GeomX>(){
     for(unsigned int i = 0; i < n+1; i++) {delete(sx12[i]);}
     delete [] sx12;
     sx12 = NULL;
@@ -156,7 +157,8 @@ public:
     last_chpt_mean = NULL;
   }//end function
 };
-  
+
+
 
 
 //############################# End Class OPD2 #####################################//

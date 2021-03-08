@@ -45,8 +45,7 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
   
   List res;
   if (type == 0 || type == 1){
-    OPD2<Geom1> X;
-    X.OPD2(data1, data2, penalty);
+    OPD2<Geom1> X = OPD2<Geom1>(data1, data2, penalty);
     X.algoFPOPD2(data1, data2, type);
     res["chpts"] = X.get_chpts();
     res["means1"] = X.get_means1();
@@ -55,8 +54,7 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
    
   }
   if (type == 2){
-    OPD2<Geom2> X;
-    X.OPD2(data1, data2, penalty);
+    OPD2<Geom2> X= OPD2<Geom2>(data1, data2, penalty);
     X.algoFPOPD2(data1, data2, type);
     res["chpts"] = X.get_chpts();
     res["means1"] = X.get_means1();

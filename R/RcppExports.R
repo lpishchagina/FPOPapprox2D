@@ -24,7 +24,3 @@ FPOP2D <- function(data1, data2, penalty, type) {
     .Call(`_FPOPapprox2D_FPOP2D`, data1, data2, penalty, type)
 }
 
-rcpp_hello_world <- function() {
-    .Call(`_FPOPapprox2D_rcpp_hello_world`)
-}
-
