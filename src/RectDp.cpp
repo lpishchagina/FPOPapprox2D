@@ -8,12 +8,12 @@ using namespace std;
 //ATTENTION: Currently, the functions "exclusion" and "intersection" are implemented only for the case dim = 2.
 //These functions need to be improved for the case dim != 2 
 
-//############################## constructor #####################################//
+
 RectDp::RectDp(){
   p = 0;
   coordinates = NULL;
 }
-RectDp::RectDp(unsigned dim){
+RectDp::RectDp(unsigned int dim){
   p = dim;
   coordinates = new double*[p]; 
   for(unsigned int i = 0; i < p; i++) {
@@ -23,26 +23,28 @@ RectDp::RectDp(unsigned dim){
   }
 }
 
-RectDp::RectDp(double** coords){coordinates = coords;}
-//############################### destructor #####################################//
+RectDp::RectDp(unsigned int dim, double** coords){
+  p = dim;
+  coordinates = coords;
+}
+
 RectDp::~RectDp(){
   for(unsigned int i = 0; i < p; i++) {delete(coordinates[i]);}
   delete [] coordinates;
   coordinates = NULL;
 }
 
-//############################## accessory #######################################//
 double** RectDp::get_coordinates(){return coordinates;}
 unsigned int RectDp::get_p(){return p;}
 
-//############################## min max #########################################//
 double RectDp::min_ab(double a, double b){if (a < b) {return a;} else {return b;}}
 double RectDp::max_ab(double a, double b){if (a > b) {return a;} else {return b;}}
 
 bool RectDp::IsEmpty_rect(){
-  double** coords = coordinates;
-  if (coords[0][0] >= coords[0][1] || coords[1][0] >= coords[1][1]){return true;}
-  else {return false;} 
+  for (unsigned int k = 0; k < p; k++){
+    if (coordinates[k][0] >= coordinates[k][1] || coordinates[k][0] >= coordinates[k][1]){return true;}
+  }
+  return false;
 }
 
 
@@ -51,7 +53,7 @@ bool RectDp::IsEmpty_rect(){
 //ATTENTION: Currently, the functions "exclusion" and "intersection" are implemented only for the case dim = 2.
 //This function are implemented only for the case dim = 2.
 
-void RectDp::intersectionD2(DiskDp disk){
+void RectDp::IntersectionD2(DiskDp disk){
   double r = disk.get_radius();        
   std::vector<double> c = disk.get_center();            //parameters of the disk
   bool fl = true;                                       // empty set
@@ -104,7 +106,7 @@ void RectDp::intersectionD2(DiskDp disk){
 
 
 //############################## exclusion ######################################//
-void RectDp::exclusionD2(DiskDp disk){
+void RectDp::ExclusionD2(DiskDp disk){
   double r = disk.get_radius();                         //parameters of the disk
   std::vector<double> c = disk.get_center();
   //----------------------approximation-----------------------------------------

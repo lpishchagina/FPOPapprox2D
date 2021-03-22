@@ -7,29 +7,27 @@
 //ATTENTION: Currently, the functions "exclusion" and "intersection" are implemented only for the case dim = 2.
 //These functions need to be improved for the case dim != 2 
 
-//################################################################################//
-//############################### Class RectDp #####################################//
 class RectDp{
+private:
+  double** coordinates;//matrix of coordinates x dim x 2,each xi =(xi0,xi1)  i = 0, p-1
+  unsigned int p;
+  
 public:
-  //------------------------------constructor-------------------------------------//
   RectDp();
   RectDp(unsigned dim);
+  RectDp(unsigned dim, double** coords);
   ~RectDp();
-  RectDp(double** coords);
   
-  //------------------------------accessory---------------------------------------//
   double** get_coordinates();
   unsigned int get_p();
-  //--------------------------------min max---------------------------------------//
+  
   double min_ab(double a, double b);
   double max_ab(double a, double b);
-  //-------------------difference and intersection--------------------------------//
+  
   bool IsEmpty_rect();
-  void exclusionD2(DiskDp disk);
-  void intersectionD2(DiskDp disk);
-private:
-  double** coordinates;                        //matrix of coordinates x dim x 2,each xi =(xi0,xi1)  i = 0, dim-1
-  unsigned int p;
+  void ExclusionD2(DiskDp disk);
+  void IntersectionD2(DiskDp disk);
+
 };
-//############################# End Class RectDp ###################################//
+
 #endif //RECTDP_H
