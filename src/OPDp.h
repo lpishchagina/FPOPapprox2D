@@ -21,7 +21,7 @@ class OPDp{
 private:
   double penalty; //value of penalty 
   int n; //data length
-  int p;
+  int p;  //dimension
   double** sx12;  // vector sum x1,x2,..,xp x1^2, x2^2,.., xp^2
   
   std::vector<int> chpts;             //changepoints vector 
@@ -30,6 +30,7 @@ private:
   double* m;                          //globalCost = m[n+1] - chpts.size()*penalty
   GeomX geom;
   std::list<GeomX> list_geom;    //list of geometry
+  
 public:
   OPDp<GeomX>(){};
  
@@ -78,19 +79,20 @@ public:
     sx12 = vect_sx12(x); 
     penalty = get_penalty();
     m[0] = 0;
-    std::vector<int> last_chpt;// vectors of best last changepoints, 
-    std::vector<std::vector<double>> last_means;// vectors of means for the best last changepoint
-  //  for(unsigned int i = 0; i < n; i++) {last_means[i] = new double[p];}
+    
+    double** last_mean_chpt = new double*[p+1];// vectors of mean1, mean2,.., meanp  and the best last changepoints, 
+    for(unsigned int i = 0; i < p+1; i++) {last_mean_chpt[i] = new double[n];}
     
     std::ofstream test_file;
     if (test_mode == true){test_file.open("test.txt");}
     
     //Algorithm-----------------------------------------------------------------
     for (int t = 0; t < n ; t++){
+      
       Rcpp::Rcout<<"t="<<t<<std::endl;
+      
       GausseCostDp cost = GausseCostDp(p, t, t, sx12[t], sx12[t+1], m[t]);
       double min_val = cost.get_min(); //min value of cost
-      Rcpp::Rcout<<"min_val do="<< min_val << std::endl;
       std::vector<double> means =  cost.get_mu();   //means for (lbl, t)
       int lbl = t;         //best last position
       std::list<DiskDp> list_disk;//list of active disks(t-1)
@@ -116,11 +118,10 @@ public:
         ++rit_geom;
       }
       //best last changepoints and means
-      last_chpt[t] = lbl;       //vector of best last chpt
-      last_means[t] = means;     //vector of means (lbl,t)
+      last_mean_chpt[p][t] = lbl;       //vector of best last chpt
+      for (int j = 0; j < p; j++){last_mean_chpt[j][t] = means[j];} //vector of means (lbl,t)
       //new min 
-      m[t + 1] = min_val + penalty; 
-     
+      m[t + 1] = min_val + penalty;
       //Initialisation of geometry----------------------------------------------
       geom = GeomX(p, t); 
       geom.InitialGeometry(list_disk);
@@ -135,12 +136,13 @@ public:
         cost = GausseCostDp(p, lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
         double r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
         //PELT
-        if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;}
+        if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;Rcpp::Rcout<<"Pelt"<<std::endl;}
         //FPOP
+        
         if (r2 > 0){
           DiskDp disk_lblt = DiskDp(p, cost.get_mu(), sqrt(r2));
           it_geom -> UpdateGeometry(disk_lblt);
-          if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom;}
+          if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom;Rcpp::Rcout<<"fpop"<<std::endl;}
           else {if (test_mode == true && (type == 2 || type == 3)){ test_file << it_geom ->get_label_t() << " "<< it_geom ->get_disks_t_1().size() << " ";}}
         }//else
         ++it_geom;
@@ -152,19 +154,18 @@ public:
     unsigned int chp = n;
     while (chp > 0){
       chpts.push_back(chp);
-      //means.push_back(last_means[chp-1]);
-      chp = last_chpt[chp-1];
+      std::vector<double> mus;
+      for (int j = 0; j < p; j++){mus.push_back(last_mean_chpt[j][chp-1]);}
+      means.push_back(mus);
+      chp = last_mean_chpt[p][chp-1];
     }
     reverse(chpts.begin(), chpts.end());
-    //reverse(means.begin(), means.end());
+    reverse(means.begin(), means.end());
     globalCost = m[n + 1] - penalty * chpts.size();
-  /*  //memory--------------------------------------------------------------------
-    for(unsigned int i = 0; i < n; i++) {delete(last_means[i]);}
-    delete [] last_chpt;
-    delete [] last_means;
-    last_chpt = NULL;
-    last_means = NULL;
-   */
+    //memory--------------------------------------------------------------------
+    for(unsigned int i = 0; i < p+1; i++) {delete(last_mean_chpt[i]);}
+    delete [] last_mean_chpt;
+    last_mean_chpt = NULL;
   }
 };
 

@@ -26,7 +26,7 @@ using namespace std;
 //' \item{\code{globalCost}}{is a number equal to the global cost.}
 //' }                                                                                                                                                                             #     
 //' 
-//' @examples Data =  data_genDp(p = 3, n = 4, chpts = c(2, 4), means = matrix(c (0, 0, 0, 10, 10, 10), nrow = 3), noise = 1) FPOPDp(Data, penalty = 2*log(4),  type = 3)  FPOPDp(data = matrix(c(0,0,0,0,1,1,2,2,2,2,0,0), nrow = 2), penalty = 2*log(6),  type = 1) 
+//' @examples FPOPDp(data = matrix(c(0,0,0,0,1,1,2,2,2,2,0,0), nrow = 2), penalty = 2*log(6),  type = 1) 
 // [[Rcpp::export]]
 List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
   //----------stop--------------------------------------------------------------
@@ -54,16 +54,14 @@ List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
     res["means"] = Y.get_means();
     res["globalCost"] = Y.get_globalCost();
   }*/
+  
   if (type == 3){
     //test = true;//
-    
-    Rcpp::Rcout<<"salut1"<<std::endl;
     OPDp<Geom3Dp> Z = OPDp<Geom3Dp>(data, penalty);
-    Rcpp::Rcout<<"salut2"<<std::endl;
     Z.algoFPOP(data, type, test);   
-/*    res["chpts"] = Z.get_chpts();
+    res["chpts"] = Z.get_chpts();
     res["means"] = Z.get_means();
-    res["globalCost"] = Z.get_globalCost();*/
+    res["globalCost"] = Z.get_globalCost();
   }
   return res;
 }

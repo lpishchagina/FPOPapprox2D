@@ -14,8 +14,9 @@ GausseCostDp::GausseCostDp(unsigned int dim, unsigned int i, unsigned int t, dou
   p = dim;
   coef = t - i + 1;
   mi_1_p = mi_1pen;
+  mu.clear();
   for (unsigned int k = 0; k < p; k++){
-    mu[k] = (st[k] - si_1[k])/coef;
+    mu.push_back((st[k] - si_1[k])/coef);
     sum_mu2 = sum_mu2 + mu[k]*mu[k];
     sum_dif_x2 = sum_dif_x2 + (st[p+k] - si_1[p+k]);
   }

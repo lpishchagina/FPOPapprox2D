@@ -17,7 +17,7 @@
 #' \item{\code{globalCost}}{is a number equal to the global cost.}
 #' }                                                                                                                                                                             #     
 #' 
-#' @examples Data =  data_genDp(p = 3, n = 4, chpts = c(2, 4), means = matrix(c (0, 0, 0, 10, 10, 10), nrow = 3), noise = 1) FPOPDp(Data, penalty = 2*log(4),  type = 3)  FPOPDp(data = matrix(c(0,0,0,0,1,1,2,2,2,2,0,0), nrow = 2), penalty = 2*log(6),  type = 1) 
+#' @examples FPOPDp(data = matrix(c(0,0,0,0,1,1,2,2,2,2,0,0), nrow = 2), penalty = 2*log(6),  type = 1) 
 FPOPDp <- function(data, penalty, type) {
     .Call(`_FPOPapprox2D_FPOPDp`, data, penalty, type)
 }
