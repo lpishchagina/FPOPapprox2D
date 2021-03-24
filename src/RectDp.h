@@ -14,8 +14,8 @@ private:
   
 public:
   RectDp();
-  RectDp(unsigned dim);
-  RectDp(unsigned dim, double** coords);
+  RectDp(unsigned int dim);
+  RectDp(unsigned int dim, double** coords);
   ~RectDp();
   
   double** get_coordinates();
@@ -24,10 +24,13 @@ public:
   double min_ab(double a, double b);
   double max_ab(double a, double b);
   
+  std::vector<double> point_min(DiskDp disk);
+  std::vector<double> point_max(DiskDp disk);
+  
   bool IsEmpty_rect();
-  void ExclusionD2(DiskDp disk);
-  void IntersectionD2(DiskDp disk);
-
+  void Exclusion_disk(DiskDp disk);
+  void Intersection_disk(DiskDp disk);
+  
 };
 
 #endif //RECTDP_H

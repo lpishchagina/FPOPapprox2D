@@ -1,9 +1,11 @@
 #ifndef OPDP_H
 #define OPDP_H
 
+#include "RectDp.h"
 #include "DiskDp.h"
 #include "GausseCostDp.h"
 #include "Geom3Dp.h"
+#include "Geom1Dp.h"
 
 #include <fstream>
 #include <iostream>

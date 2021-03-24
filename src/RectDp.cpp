@@ -13,6 +13,7 @@ RectDp::RectDp(){
   p = 0;
   coordinates = NULL;
 }
+
 RectDp::RectDp(unsigned int dim){
   p = dim;
   coordinates = new double*[p]; 
@@ -47,93 +48,118 @@ bool RectDp::IsEmpty_rect(){
   return false;
 }
 
+std::vector<double> RectDp::point_max(DiskDp disk){
+  std::vector<double> point;
+  std::vector<double> c = disk.get_center();
+  for (unsigned int k = 0; k < p; k++){
+    if (c[k] <= coordinates[k][0]) {point.push_back(coordinates[k][1]);}
+    else if (c[k] >= coordinates[k][1]) {point.push_back(coordinates[k][0]);}
+    else { 
+      if ((c[k] - coordinates[k][1])*(c[k] - coordinates[k][1]) >= (c[k] - coordinates[k][0])*(c[k] - coordinates[k][0])) {point.push_back(coordinates[k][1]);}
+      else{point.push_back(coordinates[k][0]);} 
+    }
+  }
+  return point;
+}
 
+std::vector<double> RectDp::point_min(DiskDp disk){
+  std::vector<double> point;
+  std::vector<double> c = disk.get_center();
+  for (unsigned int k = 0; k < p; k++){
+    if (c[k] <= coordinates[k][0]) {point.push_back(coordinates[k][0]);}
+    else if (c[k] >= coordinates[k][1]) {point.push_back(coordinates[k][1]);}
+    else { 
+      if ((c[k] - coordinates[k][1])*(c[k] - coordinates[k][1]) >= (c[k] - coordinates[k][0])*(c[k] - coordinates[k][0])) {point.push_back(coordinates[k][0]);}
+      else{point.push_back(coordinates[k][1]);} 
+    }
+  }
+  return point;
+}
 
-//############################## intersection ####################################// 
-//ATTENTION: Currently, the functions "exclusion" and "intersection" are implemented only for the case dim = 2.
-//This function are implemented only for the case dim = 2.
-
-void RectDp::IntersectionD2(DiskDp disk){
+void RectDp::Intersection_disk(DiskDp disk){
   double r = disk.get_radius();        
   std::vector<double> c = disk.get_center();            //parameters of the disk
   bool fl = true;                                       // empty set
-  //----------------------approximation-----------------------------------------
-  for (unsigned int k = 0; k < 2; k ++){
-    if (c[k] >= coordinates[k][0] && c[k] <= coordinates[k][1]){
-      fl = false; //boundary point is inside xk = [xk0,xk1]
-      for (unsigned int j = 0; j < 2; j ++){
+  //-points_min_max-------------------------------------------------------------
+  std::vector<double> pnt_t = point_max(disk);
+  std::vector<double> pnt_b = point_min(disk);
+  //----------------------------------------------------------------------------
+  for (unsigned int k = 0; k < p; k ++){
+    //--------------------------------------------------------------------------
+    bool fl_ck = true;
+    for (unsigned int j = 0; j < p; j++){if (j != k) { fl_ck = (fl_ck) && (c[j] >= coordinates[j][0]) && (c[j] <= coordinates[j][1]);}}
+    if (fl_ck == true) { 
+      coordinates[k][0] = max_ab(coordinates[k][0], c[k] - r);                
+      coordinates[k][1] = min_ab(coordinates[k][1], c[k] + r);                        
+      fl = false;  
+    }
+    else{
+      //discriminant------------------------------------------------------------
+      double sum_dif_b = 0;
+      double sum_dif_t = 0;
+      for (unsigned int j = 0; j < p; j++){
         if (j != k){
-          coordinates[j][0] = max_ab(coordinates[j][0], c[j] - r);
-          coordinates[j][1] = min_ab(coordinates[j][1], c[j] + r);
+          sum_dif_b = sum_dif_b + (pnt_b[j] - c[j]) * (pnt_b[j] - c[j]);
+          sum_dif_t = sum_dif_t + (pnt_t[j] - c[j]) * (pnt_t[j] - c[j]);
         }
       }
-    }//if (c[k] >= coordinates[k][0] && c[k] <= coordinates[k][0])
-    else{
-      std::vector<double> diskr_4;// if  diskr_4 =< 0 - no intersection points, if  diskr_4 > 0 - two intersection points
-      for (unsigned int j = 0; j < 2; j++){diskr_4[j] = r * r - (coordinates[k][j] - c[k]) * (coordinates[k][j] - c[k]);}
-      std::vector<double> roots0 = {INFINITY,-INFINITY};  // intersection points
-      std::vector<double> roots1 = {INFINITY,-INFINITY}; 
-      if (diskr_4[0] > 0){
+      double db_4 = r * r - sum_dif_b;
+      double dt_4 = r * r - sum_dif_t;
+      //------------------------------------------------------------------------
+      if(db_4 > 0 || dt_4 > 0){ 
+        double b1 = INFINITY;       //intersection points
+        double t1 = INFINITY;
+        double b2 = -INFINITY;
+        double t2 = -INFINITY;
+        if (db_4 > 0){
+          b1 = c[k] - sqrt(db_4);
+          b2 = c[k] + sqrt(db_4);
+        }
+        if (dt_4 > 0){
+          t1 = c[k] - sqrt(dt_4);
+          t2 = c[k] + sqrt(dt_4);
+        }
+        coordinates[k][0] = max_ab(coordinates[k][0], min_ab(b1, t1)); 
+        coordinates[k][1] = min_ab(coordinates[k][1], max_ab(b2, t2));
         fl = false;
-        for (unsigned int j = 0; j < 2; j++){
-          if (j != k) {
-            roots0[0] = c[j] - sqrt(diskr_4[0]);
-            roots0[1] = c[j] + sqrt(diskr_4[0]);
-          } 
-        }
-      }//if (diskr_4[0] > 0)
-      if (diskr_4[1] > 0){
-        fl = false;
-        for (int j = 0; j < 2; j++){
-          if (j != k) {
-            roots1[0] = c[j] - sqrt(diskr_4[1]);
-            roots1[1] = c[j] + sqrt(diskr_4[1]);
-          } 
-        }
-      }//if (diskr_4[1] > 0)
-      if(!fl){
-        for (unsigned int j = 0; j < 2; j ++){
-          if (j != k){
-            coordinates[j][0] = max_ab(coordinates[j][0], min_ab(roots0[0],roots1[0])); //xi0 = max{xi0, min{roots}}
-            coordinates[j][1] = min_ab(coordinates[j][1], max_ab(roots0[1],roots1[1])); //xi1 = min{xi1, max{roots}
-          }
-        }
-      }//if(!fl) intersection
-      else{coordinates[k][0] = coordinates[k][1];} //empty set
+      }
+      if (fl) {coordinates[k][0] = coordinates[k][1];}  //empty set
     }//else
-  }//for (unsigned int k = 0; k < 2; k ++)
+  }
 }
 
-
-//############################## exclusion ######################################//
-void RectDp::ExclusionD2(DiskDp disk){
-  double r = disk.get_radius();                         //parameters of the disk
-  std::vector<double> c = disk.get_center();
-  //----------------------approximation-----------------------------------------
-  for (unsigned int k = 0; k < 2; k ++){
-    std::vector<double> diskr_4;  //if diskr_4 =< 0 - no intersection points, if  diskr_4 > 0 - two intersection points
-    for (unsigned int j = 0; j < 2; j++){diskr_4[j] = r * r - (coordinates[k][j] - c[k]) * (coordinates[k][j] - c[k]);}
-    if(diskr_4[0] > 0 && diskr_4[1] > 0){
-      std::vector<double> roots0 = {INFINITY,-INFINITY};  // intersection points
-      std::vector<double> roots1 = {INFINITY,-INFINITY};
-      for (unsigned int j = 0; j < 2; j++){
-        if (j != k) {
-          roots0[0] = c[j] - sqrt(diskr_4[0]);
-          roots0[1] = c[j] + sqrt(diskr_4[0]);
-          roots1[0] = c[j] - sqrt(diskr_4[1]);
-          roots1[1] = c[j] + sqrt(diskr_4[1]);
-        }
+void RectDp::Exclusion_disk(DiskDp disk){
+  double r = disk.get_radius();        
+  std::vector<double> c = disk.get_center(); 
+  
+  std::vector<double> pnt_t = point_max(disk);
+  std::vector<double> pnt_b = point_min(disk);
+  
+  for (unsigned int k = 0; k < p; k ++){
+    double sum_dif_b = 0;
+    double sum_dif_t = 0;
+    for (unsigned int j = 0; j < p; j++){
+      if (j != k){
+        sum_dif_b = sum_dif_b + (pnt_b[j] - c[j]) * (pnt_b[j] - c[j]);
+        sum_dif_t = sum_dif_t + (pnt_t[j] - c[j]) * (pnt_t[j] - c[j]);
       }
-      for (unsigned int j = 0; j < 2; j ++){
-        if (j != k){
-          coordinates[j][0] = max_ab(coordinates[j][0], min_ab(roots0[1],roots1[1])); //xi0 = max{xi0, min{roots}}
-          coordinates[j][1] = min_ab(coordinates[j][1], max_ab(roots0[0],roots1[0])); //xi1 = min{xi1, max{roots}}
-        }
-      }
-    }//if(diskr_4[0] > 0 && diskr_4[1] > 0)
-  }//for (unsigned int k = 0; k < 2; k ++)
-}  
-//############################## End ###########################################//
-
-
+    }
+    double db_4 = r * r - sum_dif_b;
+    double dt_4 = r * r - sum_dif_t;
+    
+    if(db_4 > 0 && dt_4 > 0){ 
+      double b1 = INFINITY;       //intersection points
+      double t1 = INFINITY;
+      double b2 = -INFINITY;
+      double t2 = -INFINITY;
+      b1 = c[k] - sqrt(db_4);
+      b2 = c[k] + sqrt(db_4);
+      t1 = c[k] - sqrt(dt_4);
+      t2 = c[k] + sqrt(dt_4);
+      
+      coordinates[k][0]  = max_ab(coordinates[k][0], min_ab(b2, t2));  
+      coordinates[k][1]  = min_ab(coordinates[k][1], max_ab(t1, t1));            
+    }
+  }
+}
 
