@@ -9,26 +9,34 @@
 #include "RectDp.h"
 #include "GausseCostDp.h"
 
-//Class Geom1Dp
-//-----------------------------------------------------------------------------------------------
-//Description of geometry "Geom1Dp": 
-//Geometry for FPOP-Algorithm in p-dimension. 
-//Parameters of geometry: rectangle "rect t" - approximated set, "label_t" - moment of time
-//The updated geometry is a rectangle that approximates the intersection of the rectangle and disK.
-//Check for emptiness - correct rectangle coordinates. 
-//-----------------------------------------------------------------------------------------------
+/*
+ Class Geom1Dp
+ --------------------------------------------------------------------------------
+ Description of geometry "Geom1Dp": 
+ Geometry for FPOP-Algorithm in p-dimension. 
+ 
+ Geometry parameters:
+ "p" - dimension;
+ "label_t" - moment in time;
+ "rect_t" - rectangle, approximated set;
+
+ The updated geometry  is a rectangle that approximates the intersection of the rectangle and disk.
+ 
+ Check for emptiness - the correctness of the  rectangle coordinates. 
+ --------------------------------------------------------------------------------
+ */
 class Geom1Dp{
 private:
   unsigned int p;
-  int label_t; //time moment 
-  RectDp rect_t;          //approx rectangle
+  unsigned int label_t; 
+  RectDp rect_t;         
   
 public:
-  Geom1Dp();
+  Geom1Dp(){};
   Geom1Dp(unsigned int dim, unsigned int t);
   
   unsigned int get_p();
-  int get_label_t();
+  unsigned int get_label_t();
   RectDp get_rect_t();
   std::list<DiskDp> get_disks_t_1();
   

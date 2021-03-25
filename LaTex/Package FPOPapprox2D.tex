@@ -1,0 +1,735 @@
+\documentclass{report}
+\usepackage[left=3cm,right=3cm, top=3cm,bottom=3cm,bindingoffset=0cm]{geometry}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\begin{document}
+	\begin{center} \section*{Package FPOPapprox2D}\end{center}
+
+	\parindent = 0pt
+	\subsection*{Description}
+	
+	{\bfseries FPOPapprox2D} is an R package developed in Rcpp/C++ performing parametric changepoint detection in p-variate time series with  the Gaussian cost function. Changepoint detection uses the Functional Pruning Optimal Partitioning method (FPOP) based on an exact dynamic programming algorithm.
+	
+	\subsection*{Package structure}
+	\begin{itemize}
+		\item  Part R
+		\begin{itemize}
+			\item \underline {FPOPapprox2D.R}
+			
+			The file contains the implementation of the following function:
+			
+			 {\bfseries data\_genDp} - generation of data of dimension p with a given values of means and changepoints
+			 
+			\item \underline {RcppExports.R} 
+			
+			The file contains the implementation of the function {\bfseries FPOPDp} that calls the function {\bfseries FPOPDp} implemented in C++.
+			
+		\end{itemize}
+		\item Part C++
+		\begin{itemize}
+			\item \underline {GausseCostDp.h, GausseCostDp.cpp} 
+			
+			The files contain the implementation code for the class\hyperref [GausseCostDp]{\bfseries GausseCostDp}. 	
+			
+			\item \underline{DiskDp.h, DiskDp.cpp}
+			
+			The files contain the implementation code for the class \hyperref [DiskDp]{\bfseries DiskDp}. 
+			
+			\item  \underline{RectDp.h, RectDp.cpp}
+			
+			The files contain the implementation code for the class\hyperref [RectDp] {\bfseries RectDp}.
+			 
+			\item \underline{Geom1Dp.h, Geom1Dp.cpp} 
+			
+			The files contain the implementation code for the class \hyperref [Geom1Dp]{\bfseries Geom1Dp}. 
+			
+			\item \underline{Geom2Dp.h, Geom2Dp.cpp} 
+			
+			The files contain the implementation code for the class \hyperref [Geom2Dp]{\bfseries Geom2Dp}. 
+			
+			\item \underline{Geom3Dp.h, Geom3Dp.cpp} 
+			
+			The files contain the implementation code for the class \hyperref [Geom3Dp]{\bfseries Geom3Dp}. 
+			
+			\item \underline{OPDp.h, OPDp.cpp}
+			
+			The files contain the implementation code for the class \hyperref [OPDp]{\bfseries OPDp}. 
+			
+			\item \underline{main.cpp}
+			
+			The file contains the code of the function {\bfseries FPOPDp} that implements the change-point detection in p-variate time-series using the Functional Pruning Optimal Partitioning algorithm.
+			
+			\item \underline{RcppExports.cpp} 
+			
+			The file contains the code that exports data R/C ++ .	
+		\end{itemize}
+	\end{itemize}
+
+
+	\subsection*{Class  GausseCostDp}
+	\label{GausseCostDp}
+	
+	We consider $(x^0,.., x^p)$ - p-variate time-series when $x^i = (x_0^i,..,x_{n-1}^i), \hspace*{5mm} i = 0:(p-1)$ - the vectors of univariate data size $n$.
+	
+	We use the Gaussian cost of the segmented p-variate data when $m_{t}$ is the value of the optimal cost, $m_{0} = -\beta $.
+	We introduce the notations:
+	
+	\begin{equation}
+		\begin{gathered}
+			mu_k = E(x_{i:t}^k),\\
+			coef = (t - i + 1),\\
+			mi\_1\_p = m_{i-1} + \beta,\\
+			coef\_Var = (t-i+1)\cdot\sum_{k = 0}^{p-1}Var(x_{i:t}^k).
+		\end{gathered}
+		\label{eq:coef}
+	\end{equation}
+	
+	Then the Gaussian cost function  takes the form:
+	
+	\begin{equation}
+		q_t^i(\theta) = mi\_1\_p+ coef\cdot(sum_{k = 0}^{p-1}(\theta_k - mu-k)^2 + coef\_Var, \hspace*{5mm} i = 1:t.
+		\label{eq:costcoef}
+	\end{equation}
+	
+	We define the class characteristics (\ref{eq:coef}): 
+	
+	\begin{itemize}
+		\item {\bfseries coef}, {\bfseries coef\_Var}, {\bfseries mi\_1\_p}, {\bfseries mu}
+	\end{itemize}
+ 
+	The class implements constructor:
+	\begin{itemize}
+		
+		\item {\bfseries GausseCostDp(unsigned int dim, unsigned int i, unsigned int t, double* si\_1, double* st, double mi\_1pen)} is the Gaussian cost function at the time $[i,t]$. 
+	\end{itemize}
+	
+	We define the class methods:
+	
+	\begin{itemize}
+		\item {\bfseries get\_coef()}, {\bfseries get\_coef\_Var()}, {\bfseries get\_mi\_1\_p()}, {\bfseries get\_mu()}
+		
+		We use these  methods to access the characteristics of the class. 
+		
+		\item {\bfseries get\_min()}
+		
+		We use this method to get the minimum value of the cost function.
+	\end{itemize} 
+
+
+	\subsection*{Class DiskDp}
+	\label{DiskDp}
+	
+	A class element is a circle in p-dimension that is defined by the center coordinates and the radius.
+	
+	\begin{itemize}
+		\item We define the class characteristics: 
+		\begin{itemize}
+			\item {\bfseries center}  is the center of the circle.
+		
+			\item {\bfseries radius}  is  the radius of the circle.
+		\end{itemize}
+	
+		\item The class implements two constructors:
+		\begin{itemize}
+			\item {\bfseries DiskDp(unsigned int dim)}
+		
+			\item {\bfseries DiskDp(unsigned int dim, double* c, double r)}
+		
+			Vector $c$ is the center coordinates and $r$ is  the radius of the circle. 
+		\end{itemize}
+	
+		\item We define the class methods:
+	
+		\begin{itemize}
+			\item {\bfseries get\_center()}, {\bfseries get\_radius()}
+			
+			We use these  methods to access the class characteristics.
+		\end{itemize}
+	\end{itemize}
+	
+	\subsection*{Class RectDp}
+	\label{RectDp}
+	
+	A class element is a rectangle in p-dimension. The values for each axis are set by two constraints 
+		
+	\begin{itemize}
+		\item We define the class characteristics: 
+		\begin{itemize}
+			\item {\bfseries p, coordinates} 
+		\end{itemize}
+		
+		\item The class implements two constructors:
+		\begin{itemize}
+			\item {\bfseries RectDp(unsigned int dim)}:
+			\begin{itemize}
+					\item $p = dim$;
+					\item $coordinates_{i,0}= -\inf, \hspace*{5mm}  i = 0:p-1$;
+					\item $coordinates_{i,1} = \inf,  \hspace*{5mm} i = 0:p-1$.
+			\end{itemize}
+			
+			\item {\bfseries Rect(unsigned int dim,double** coords)}
+		\end{itemize}
+		
+		\item We define the class methods:
+		
+		\begin{itemize}
+			\item {\bfseries get\_p()}, {\bfseries get\_coordinates()}
+			
+			We use these  methods to access the class characteristics.
+			
+			\item {\bfseries min\_ab(double a, double b)}, {\bfseries max\_ab(double a, double b)}
+			
+			We use these  methods  to find the minimum and maximum of two numbers.
+			
+			\item {\bfseries point\_max\_min(double* pnt\_max, double* pnt\_min, DiskDp disk)}
+			 
+			The function changes the values of $pnt\_max$, $pnt\_min$ to the values of the vertices of the rectangle that are maximally and minimally distant from the center of the $disk$.
+			 
+			\item {\bfseries bool IsEmpty\_rect()} 
+			
+			The function checks the correctness of the coordinates of the rectangle and returns a  value $true$ if the coordinates are not correct.
+			
+			\item \hyperref [Intersection]{\bfseries Intersection\_disk(DiskDp disk)} 
+			
+			The function approximates a rectangle and a circle intersection area by horizontal and vertical lines. Basing on the intersection points of these lines, we construct a rectangle with a minimum area, which contains the intersection area of the rectangle and the circle.
+			
+			\item \hyperref [Difference]{\bfseries Exclusion\_disk(DiskDp disk)} 
+			
+			The function approximates a rectangle and a circle difference area by horizontal and vertical lines. Basing on the intersection points of these lines, we construct a rectangle with a minimum area, which contains the difference area of the rectangle and the circle.
+		\end{itemize}
+	\end{itemize}
+
+
+	\subsection*{Class Geom1Dp}
+	\label{Geom1Dp}
+	
+	\begin{itemize}
+		\item We define the class characteristics: 
+		\begin{itemize}
+			\item {\bfseries p} is the value of dimension.
+			
+			\item {\bfseries label\_t} is the time moment.
+			
+			\item {\bfseries rect\_t} is the rectangle, the element of class {\bfseries RectDp}.
+			
+		\end{itemize}
+		
+		\item The class implements constructor:
+		\begin{itemize}
+			\item {\bfseries Geom1Dp(unsigned  int dim, unsigned  int t)}
+			\begin{itemize}
+				\item $p = dim$;
+				\item $label\_t = t$;
+				\item $rect\_t = RectDp(dim)$.
+			\end{itemize}	
+		\end{itemize}
+		
+		\item We define the class methods:
+		
+		\begin{itemize}
+			\item  {\bfseries get\_p()}, {\bfseries get\_label\_t()}, {\bfseries get\_rect\_t()}
+			
+			\item {\bfseries InitialGeometry(std::list$<$DiskDp$>$ disks)}  is empty function body.	
+			
+			\item {\bfseries UpdateGeometry(DiskDp disk)} 
+			
+			The function calls the function {\bfseries Intersection\_disk(DiskDp disk)}  implemented in the RectDp class.
+			
+			\item {\bfseries bool EmptyGeometry()}
+			
+			The function checks the parameters of the rectangle {\bfseries rect\_t}. If the parameters are not correct, this rectangle is empty. 
+		\end{itemize}
+	\end{itemize}
+
+	\subsection*{Class Geom2Dp}
+	\label{Geom2Dp}
+
+	\begin{itemize}
+		\item We define the class characteristics: 
+		\begin{itemize}
+			\item {\bfseries p} is the value of dimension.
+		
+			\item {\bfseries label\_t} is the time moment.
+		
+			\item {\bfseries rect\_t} is the rectangle, the element of class {\bfseries RectDp}.
+			
+			\item {\bfseries disks\_t\_1} is the list of active circles for the moment $t-1$.
+		\end{itemize}
+	
+		\item The class implements constructor:
+		\begin{itemize}
+			\item {\bfseries Geom2Dp(unsigned  int dim, unsigned  int t)}
+				\begin{itemize}
+					\item $p = dim$;
+					\item $label\_t = t$;
+					\item $rect\_t = RectDp(dim)$;
+					\item $disks\_t\_1.clear()$.
+				\end{itemize}	
+		\end{itemize}
+	
+		\item We define the class methods:
+	
+		\begin{itemize}
+			\item  {\bfseries get\_p()}, {\bfseries get\_label\_t()}, {\bfseries get\_rect\_t()}, {\bfseries get\_disks\_t\_1()}
+		
+			\item {\bfseries InitialGeometry(std::list$<$DiskDp$>$ disks)}  
+		
+			We define $disks\_t\_1$ as $disks$ .	
+		
+			\item {\bfseries UpdateGeometry(DiskDp disk\_t)} 
+		
+			The function calls the function {\bfseries Intersection\_disk(DiskDp diskt)}  implemented in the {\bfseries RectDp} class.
+			If the result rectangle exists it removes from the list $disks\_t\_1$ the disks that are far from the  $disk\_t$.
+			Then it calls a function {\bfseries  Exclusion\_disk(DiskDp disk)} for each disk from the list  $disks\_t\_1$.
+		
+			\item {\bfseries bool EmptyGeometry()}
+		
+			The function checks the parameters of the rectangle {\bfseries rect\_t}. If the parameters are not correct, this rectangle is empty. 
+		\end{itemize}
+	\end{itemize}
+
+
+	\subsection*{Class Geom3Dp}
+\label{Geom3Dp}
+
+\begin{itemize}
+	\item We define the class characteristics: 
+	\begin{itemize}
+		\item {\bfseries p} is the value of dimension.
+		
+		\item {\bfseries label\_t} is the time moment.
+		
+		\item {\bfseries fl\_empty} is  $false$ if geometry exists, otherwise $true$.
+		
+		\item {\bfseries disks\_t\_1} is the list of active circles for the moment $t-1$.
+	\end{itemize}
+	
+	\item The class implements constructor:
+	\begin{itemize}
+		\item {\bfseries Geom3Dp(unsigned  int dim, unsigned  int t)}
+		\begin{itemize}
+			\item $p = dim$;
+			\item $label\_t = t$;
+			\item $fl\_empty = false$;
+			\item $disks\_t\_1.clear()$.
+		\end{itemize}	
+	\end{itemize}
+	
+	\item We define the class methods:
+	
+	\begin{itemize}
+		\item  {\bfseries get\_p()}, {\bfseries get\_fl\_empty()}, {\bfseries get\_label\_t()}, {\bfseries get\_disks\_t\_1()}
+		
+		\item {\bfseries InitialGeometry(std::list$<$DiskDp$>$ disks)}  We define $disks\_t\_1$ as $disks$ .	
+		
+		\item {\bfseries UpdateGeometry(DiskDp disk\_t)} 
+		
+		The function removes from the list $disks\_t\_1$ the disks that are far from the  $disk\_t$.
+		Then it calls a function {\bfseries  Exclusion\_disk(DiskDp disk)} for each disk from the list  $disks\_t\_1$.
+		
+		\item {\bfseries bool EmptyGeometry()}
+		
+		The function checks the parameter {\bfseries fl\_empty}. If the parameter is  $true$  this geometry is empty. 
+	\end{itemize}
+\end{itemize}
+
+	
+	\subsection*{Class OPDp}
+	\label{OPDp}
+	
+	\begin{itemize}
+		\item We define the class characteristics: 
+		
+		\begin{itemize}
+			\item {\bfseries p} is the value of dimension.
+			
+			\item {\bfseries n} is the number of data points.
+			
+			\item {\bfseries penalty} is a value of penalty (a non-negative real number).
+			
+			\item {\bfseries geom} is the element of   {\bfseries GeomX} class.
+			
+			\item {\bfseries list\_geom} is the list of  {\bfseries GeomX}  class element.
+			
+			\item {\bfseries sx12} are sum vectors $\sum_{i=0}^{t-1}x^k_i$,  $\sum_{i=0}^{t-1} (x^k_i)^2,  \hspace*{5mm}  t = 0:n-1,  \hspace*{5mm}  k = 0:p-1$ .
+			
+			\item {\bfseries chpts} is the vector of changepoints.
+			
+			\item {\bfseries means} is the matrrix of successive means for data  $x$.
+			
+			\item {\bfseries globalCost} is the global cost.
+				
+		\end{itemize}
+		
+		\item The class implements the constructor:
+		
+		\begin{itemize}
+			\item {\bfseries  OPDp$<$GeomX$>$ (Rcpp::NumericMatrix x, double beta)}
+			\begin{itemize}
+				\item $penalty = beta$;
+				
+				\item $p = (unsigned int)x.nrow();$
+				
+				\item $n = (unsigned int)x.ncol();$
+				
+				\item we allocate memory for $sx12$.
+			\end{itemize}	
+		\end{itemize}
+		
+		\item We define the class methods:
+		
+		\begin{itemize}
+			\item {\bfseries get\_chpts()}, {\bfseries get\_means()}, {\bfseries get\_p()}, {\bfseries get\_globalCost()}, {\bfseries get\_n()}, {\bfseries get\_penalty()} 
+			
+			We use these  methods to access the class characteristics.
+			
+			\item {\bfseries vect\_sx12(Rcpp::NumericMatrix x)}
+			
+			We use this method to find the sum vectors:
+			
+			 $\sum_{i=0}^{t-1}x^k_i, \hspace*{5mm}  \sum_{i=0}^{t-1} (x^k_i)^2, \hspace*{5mm} t = 0:n-1, \hspace*{5mm} k = 0:p-1$.
+			
+			\item \hyperref [algoFPOP] {\bfseries algoFPOP(Rcpp::NumericMatrix x, int type, bool test\_mode)} 
+			
+			The function implements the Functional Pruning Optimal Partitioning algorithm with 3 types of geometries: 
+			
+			$type = 1: Geom1Dp$,
+			
+			$type = 2: Geom2Dp$,
+			 
+			$type = 3: Geom3Dp$.
+		\end{itemize}
+	\end{itemize}
+
+\label{Intersection}	
+\begin{center} 
+	\section*{void RectDp::Intersection\_disk(DiskDp disk)}
+\end{center}
+
+\parindent = 0pt
+\subsection*{Description}
+
+The function approximates a rectangle and a circle intersection area by horizontal and vertical lines. Basing on the intersection points of these lines, we construct a rectangle with a minimum area, which contains the intersection area of the rectangle and the circle.
+
+If there is no intersection, the function makes at least one of the rectangle parameters satisfies the condition: 
+
+\begin{equation}
+	coordinates_{i,0} \ge coordinates_{i,1} , \hspace*{5mm} i = 0:p-1.
+	\label{eq:cond1}
+\end{equation}
+
+\subsection*{Input parameters:}
+
+The input of this function:
+
+\begin{itemize}
+	\item {\bfseries disk}  is the circle, the element of class {\bfseries DiskDp} 
+	
+\end{itemize}
+
+\subsection*{Algorithm:}
+
+\subsubsection*{Preprocessing}
+
+Using the methods {\bfseries get\_center()}, {\bfseries get\_radius()} implemented in the class {\bfseries DiskDp} we define the parameters of the circle {\bfseries disk}:
+
+\begin{equation}
+	\begin{gathered}
+		c = disk.get\_center(),\\
+		r = disk.get\_radius().
+		\label{eq:paramdisk}
+	\end{gathered}
+\end{equation}
+
+We define the points $pnt\_max$ and $pnt\_min$  and we update them using the function $point\_max\_min(pnt\_max, pnt\_min, disk)$:
+
+\begin{equation}
+	\begin{gathered}
+		pnt\_max = new double[p];\\
+		pnt\_min = new double[p];\\
+		point\_max\_min(pnt\_max, pnt\_min, disk);
+		\label{eq:pointsminmax}
+	\end{gathered}
+\end{equation}
+
+\subsubsection*{Approximation}
+
+For each axis we update two constraints: $coordinates_{k,0}$, $ coordinates_{k,1}, \hspace*{5mm} k = 0,\hspace*{5mm}  p-1 $.
+\begin{itemize}
+	
+	\item \underline 
+	
+	If for  all $j = 0: p-1$  and $j \neq k$ $coordinates_{j,0} \le c_j\le coordinates_{j,1} $ then: 
+	\begin{equation}
+		\begin{gathered}
+			coordinates_{k,0} = \max\{coordinates_{k,0}, c_k - r\},\\
+			coordinates_{k,1} = \min\{coordinates_{k,1}, c_k + r\}.
+		\end{gathered}
+	\end{equation}
+	
+	Otherwise, we consider the points of intersection of the circle with $p-1$-planes, when we fixe coordinates   $x_i = pnt\_min_i,$ and $x_i = pnt\_max_i, \hspace*{5mm} i \neq k.$  The circle has two intersection points  if the discriminant is positive. We define the values $db\_4, dt\_4$ (\ref{eq:diskriminant1}) as the value of a discriminant devided by  $4$ of each system (\ref{eq:sys1}, \ref{eq:sys2}):
+	
+	\begin{equation}
+		\begin{cases}
+			(x_k - c_k)^2 + \sum_{i=0, i \neq k}^{p-1} (x_i - c_i)^2 = r^2,\\ 
+			x_i = pnt\_min_i,\hspace*{5mm} i \neq k.
+		\end{cases}
+		\label{eq:sys1}
+	\end{equation}
+	
+	\begin{equation}
+		\begin{cases}
+			(x_k - c_k)^2 + \sum_{i=0, i \neq k}^{p-1} (x_i - c_i)^2 = r^2,\\ 
+			x_i = pnt\_max_i,\hspace*{5mm} i \neq k.
+		\end{cases}
+		\label{eq:sys2}
+	\end{equation}
+	
+	\begin{equation}
+		\begin{gathered}
+			db\_4 = r^2 - \sum_{i=0, i \neq k}^{p-1} (pnt\_min_i - c_i)^2,\\
+			dt\_4 = r^2 - \sum_{i=0, i \neq k}^{p-1} (pnt\_max_i - c_i)^2,\\
+			\label{eq:diskriminant1}
+		\end{gathered}
+	\end{equation}
+	
+	{\bfseries Note:} we define the default intersection points for the algorithm to work correctly as:
+	\begin{equation}
+		\begin{gathered}
+			b1 = t1 =  \infty,\\
+			b2 = t2 = -\infty.
+			\label{eq:lrinf}
+		\end{gathered}
+	\end{equation}
+	
+	We check the sign of $db\_4,dt\_4$ and find the intersection points:
+	
+	\begin{equation}
+		\begin{cases}
+			db\_4 > 0,\\ 
+			b1 = c_k - \sqrt {db\_4},\\
+			b2 = c_k + \sqrt {db\_4}.
+			\label{eq:l1l2}
+		\end{cases}
+	\end{equation}
+	
+	\begin{equation}
+		\begin{cases}
+			dt\_4 > 0,\\ 
+			t1 = c_k - \sqrt {dt\_4},\\
+			t2 = c_k + \sqrt {dt\_4}.
+			\label{eq:r1r2}
+		\end{cases}
+	\end{equation}
+	
+	We define the characteristics of rectangle as:
+	
+	\begin{equation}
+		\begin{gathered}
+			coordinates_{k,0} = \max\{coordinates_{k,0}, \min\{b1, t1\}\},\\
+			coordinates_{k,1} = \min\{coordinates_{k,1}, \max\{b2, t2\}\}.
+		\end{gathered}
+	\end{equation}
+	
+	\item If all the values $db\_4$, $dt\_4$ for all axis  are non-positive,  the rectangle has no intersections with the circle and we define the characteristics of rectangle as: 
+	\begin{equation}
+		coordinates_{0,0} = coordinates_{0,1}.
+		\label{eq:empty}
+	\end{equation}
+	
+\end{itemize}	
+
+\label{Empty}
+\begin{center} 
+	\section*{\bfseries bool RectDp::IsEmpty\_rect()}
+\end{center} 
+
+\subsection*{Description}
+
+The function checks the parameters of the rectangle. If the parameters are not correct, this rectangle is empty. 
+
+\subsection*{Output parameters:}
+
+The function returns a boolean value {\bfseries true} if the rectangle is empty, and {\bfseries false} if it is not empty.
+
+\subsection*{Algorithm:}
+
+If at least one of the rectangle parameters satisfies the condition  (\ref{eq:cond1}) this rectangle is empty and the function returns a boolean value {\bfseries true}, else  {\bfseries false}.
+
+\label{Difference}
+\begin{center} 
+	\section*{void RectDp::Exclusion\_disk(DiskDp disk)}
+\end{center}
+\parindent = 0pt
+\subsection*{Description}
+
+The function approximates a rectangle and a circle difference area by horizontal and vertical lines. Basing on the intersection points of these lines, we construct a rectangle with a minimum area, which contains the difference area of the rectangle and the circle.
+
+If the difference is the empty set, the function makes the rectangle with parameters that correspond to the condition (\ref{eq:cond1}).
+
+\subsection*{Input parameters:}
+
+The input of this function consists:
+
+\begin{itemize}	
+	\item {\bfseries disk}  is the circle, the element of class {\bfseries DiskDp} 
+\end{itemize}
+
+\subsection*{Algorithm:}
+
+\subsubsection*{Preprocessing}
+
+We define:
+
+\begin{itemize}
+	\item the parameters of the circle {\bfseries disk} (\ref{eq:paramdisk}),
+	
+	
+	\item We define the points $pnt\_max$ and $pnt\_min$  and we update them using the function $point\_max\_min(pnt\_max, pnt\_min, disk)$ (\ref{eq:pointsminmax})	
+\end{itemize}
+ 
+\subsubsection*{Approximation}
+
+For each axis we update two constraints: $coordinates_{k,0}$, $ coordinates_{k,1}, \hspace*{5mm} k = 0,\hspace*{5mm} p-1 $.
+
+We consider two directions and update the characteristics of rectangle:
+
+\begin{itemize}
+	
+	\item We consider the points of intersection of the circle with $p-1$-planes, when we fixe coordinates   $x_i = pnt\_min_i$ and $x_i = pnt\_max_i, \hspace*{5mm} i \neq k.$  The circle has two intersection points  if the discriminant is positive. We define the values $db\_4, dt\_4$ (\ref{eq:diskriminant1}) as the value of a discriminant devided by  $4$ of each system (\ref{eq:sys1}, \ref{eq:sys2})  
+	
+	 We update the characteristics $coordinates_{k,0}, coordinates_{k,1}$ if $db\_4, dt\_4$ (\ref{eq:diskriminant1}) are positive.
+	
+	{\bfseries Note:} we define the default intersection points for the algorithm to work correctly as (\ref{eq:lrinf}).
+	
+	We check the sign of $db\_4, dt\_4$ and find the intersection points (\ref{eq:l1l2}) and (\ref{eq:r1r2}).
+	
+	We define the characteristics of rectangle as:
+	
+	\begin{equation}
+		\begin{gathered}
+			coordinates_{k,0} = \max\{coordinates_{k,0}, \min\{b2, t2\}\},\\
+			coordinates_{k,1} = \min\{coordinates_{k,1}, \max\{b1, t1\}\}.
+		\end{gathered}
+	\end{equation}
+\end{itemize}	
+
+
+\label{algoFPOP}
+\begin{center} 
+	\section*{\bfseries void OPDp$<$X$>$::algoFPOP(Rcpp::NumericMatrix x, int type, bool test\_mode)}
+\end{center} 
+
+\subsection*{Description}
+
+	The function implements FPOP method.
+
+\subsection*{Input parameters:}
+
+\begin{itemize}
+	\item {\bfseries x} is the matrix of data.
+	\item {\bfseries type} is the value defined the type of geometry.
+\end{itemize}
+
+\subsection*{Output parameters:}
+
+The function forms the vectors {\bfseries chpts}, list of {\bfseries means} and the value of {\bfseries globalCost}.
+
+\subsection*{Algorithm:}
+
+\subsubsection*{Preprocessing}
+
+\begin{itemize}
+	\item We define:
+	\begin{itemize}
+		\item $sx12 = vect\_sx12(x)$.	
+		\item $m[0] = 0$.
+	\end{itemize}	
+	\item We allocate memory for: 
+	\begin{itemize}
+		\item the vector $last\_chpt$ of best last changepoints.
+		\item the matrix $last\_mean$.
+		\item the vector  $m$ is the value of the sum optimal cost and penalty at the moment $t,  \hspace*{2mm} t = 0:n-1$.
+		\item the vector  $mus$ is the values of temporary means.
+	\end{itemize}	
+\end{itemize}
+
+\subsubsection*{Processing}
+
+For each $t = 0:n-1$ we do:
+ 
+\begin{itemize}
+	\item We define:
+	\begin{itemize}
+		\item $list\_disk$ is a list of active disks for $t-1$ as $NULL$ .
+		\item $cost$  is the cost function for the interval $(t,t)$.
+		\item $min\_val = cost.get\_min()$  is a minimum value for  the  $cost$.
+		\item $lbl = t$ is a best last position for $t$.
+		\item $mus = cost.get\_mu()$ vector temporary means of the interval $(lbl, t)$.
+	\end{itemize}
+	
+	\item \underline {The first run: Searching of $m[t+1]$}
+	
+	For each element of the list $list\_geom$ we do:
+	
+	\begin{itemize}
+		\item We define $u$ is the $label\_t$ of the current element.
+		\item We define the list of active disks  $list\_disk$ for $t-1$ using the cost function $cost\_t\_1$  for the interval $(u,t-1)$ .
+		\item We create $cost$  is the cost function for the interval $(u,t)$.	
+		\item We find the minimum value  $min\_val$ of the cost function using the method {\bfseries get\_min()}. 
+	\end{itemize}
+	\item We choose the minimum  among all found values ${min\_val}$ and we define the value $lbl$ that correspond this minimum.	
+	\item We put the value $min\_val + penalty$ to the vector $m$  by the position $t+1$ .	
+	\item We put the values  $lbl$, $mus$ that corresponds $m[t+1]$ to the vector $last\_chpt$ and matrix $last\_mean$.
+
+	\item \underline {New geometry}
+
+	 We create $geom$ for the  point $(x_t^0,..,x_t^{p-1})$ of the p-variate time series and do the initialization of geometry parameters as (\ref{eq:firstgeom})  and we add this element to the list $list\_geom$.
+
+	\begin{equation}
+		\begin{gathered}
+		geom = GeomX(p,t),\\
+		geom.InitialGeometry(list\_disk);
+		\label{eq:firstgeom}
+	\end{gathered}
+	\end{equation}	
+
+
+	\item \underline {The second run: Pruning}
+	
+	For each element of the list $list\_geom$ we do:
+	
+	\begin{itemize}
+		\item We define $label\_t$  of the current element as $lbl$  .
+		\item We calculate the cost function for the interval $(lbl,t)$ as \ref{eq:Cost} and $r2$ is the radius to the second power of the new disk as \ref{eq:radiusInter}.
+		
+		\begin{equation}
+		cost = GausseCostDp(p, lbl, t, sy12[lbl], sy12[t+1], m[lbl]);
+			\label{eq:Cost}
+		\end{equation}
+		
+		\begin{equation}
+			r2= \frac {m[t + 1] - m[lbl] - cost.get\_coef\_Var()}{   cost.get\_coef()}.
+			\label{eq:radiusInter}
+		\end{equation}
+		
+		
+		 \item \underline {PELT-pruning:} 
+		 
+		 If $r2 \le 0$ we remove this element of $list\_geom$, else we define
+		 
+		  $disk\_lblt = DiskDp(cost.get\_mu(), \sqrt{r2})$.
+		
+		
+		
+		\item \underline {FPOP-pruning:} 
+		
+		We update the geometry $geom$ using the function $UpdateGeometry(disk\_lblt)$. If  $geom$ is empty we remove this element o $list\_geom$. 	
+	\end{itemize} 
+\end{itemize} 
+	
+\subsubsection*{Output:}
+
+Knowing the values of  vector  $last\_chpt$, the matrix $last\_mean$ and vector  $m$ we forme the vector of $chpts$, the list of $means$ and the value $globalCost$.
+	
+\end{document}

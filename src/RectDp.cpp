@@ -4,16 +4,7 @@
 #include<iostream>
 
 using namespace std;
-
-//ATTENTION: Currently, the functions "exclusion" and "intersection" are implemented only for the case dim = 2.
-//These functions need to be improved for the case dim != 2 
-
-
-RectDp::RectDp(){
-  p = 0;
-  coordinates = NULL;
-}
-
+//constructor and destructor----------------------------------------------------
 RectDp::RectDp(unsigned int dim){
   p = dim;
   coordinates = new double*[p]; 
@@ -26,6 +17,8 @@ RectDp::RectDp(unsigned int dim){
 
 RectDp::RectDp(unsigned int dim, double** coords){
   p = dim;
+  coordinates = new double*[p]; 
+  for(unsigned int i = 0; i < p; i++) {coordinates[i] = new double[2];}
   coordinates = coords;
 }
 
@@ -34,55 +27,37 @@ RectDp::~RectDp(){
   delete [] coordinates;
   coordinates = NULL;
 }
-
+//accessory---------------------------------------------------------------------
 double** RectDp::get_coordinates(){return coordinates;}
 unsigned int RectDp::get_p(){return p;}
 
 double RectDp::min_ab(double a, double b){if (a < b) {return a;} else {return b;}}
 double RectDp::max_ab(double a, double b){if (a > b) {return a;} else {return b;}}
 
-bool RectDp::IsEmpty_rect(){
+//------------------------------------------------------------------------------
+void RectDp::point_max_min(double* pnt_max, double* pnt_min, DiskDp disk){
+  double* c = disk.get_center();
   for (unsigned int k = 0; k < p; k++){
-    if (coordinates[k][0] >= coordinates[k][1] || coordinates[k][0] >= coordinates[k][1]){return true;}
+    if (abs(c[k] - coordinates[k][1]) >= abs(c[k] - coordinates[k][0])) {
+      pnt_max[k] = coordinates[k][1];    pnt_min[k] = coordinates[k][0]; 
+    }
+    else{pnt_max[k] = coordinates[k][0];  pnt_min[k] = coordinates[k][1];}
   }
+}
+//IsEmpty_rect------------------------------------------------------------------
+bool RectDp::IsEmpty_rect(){
+  for (unsigned int k = 0; k < p; k++){if (coordinates[k][0] >= coordinates[k][1]){return true;}}
   return false;
 }
-
-std::vector<double> RectDp::point_max(DiskDp disk){
-  std::vector<double> point;
-  std::vector<double> c = disk.get_center();
-  for (unsigned int k = 0; k < p; k++){
-    if (c[k] <= coordinates[k][0]) {point.push_back(coordinates[k][1]);}
-    else if (c[k] >= coordinates[k][1]) {point.push_back(coordinates[k][0]);}
-    else { 
-      if ((c[k] - coordinates[k][1])*(c[k] - coordinates[k][1]) >= (c[k] - coordinates[k][0])*(c[k] - coordinates[k][0])) {point.push_back(coordinates[k][1]);}
-      else{point.push_back(coordinates[k][0]);} 
-    }
-  }
-  return point;
-}
-
-std::vector<double> RectDp::point_min(DiskDp disk){
-  std::vector<double> point;
-  std::vector<double> c = disk.get_center();
-  for (unsigned int k = 0; k < p; k++){
-    if (c[k] <= coordinates[k][0]) {point.push_back(coordinates[k][0]);}
-    else if (c[k] >= coordinates[k][1]) {point.push_back(coordinates[k][1]);}
-    else { 
-      if ((c[k] - coordinates[k][1])*(c[k] - coordinates[k][1]) >= (c[k] - coordinates[k][0])*(c[k] - coordinates[k][0])) {point.push_back(coordinates[k][0]);}
-      else{point.push_back(coordinates[k][1]);} 
-    }
-  }
-  return point;
-}
-
+//Intersection_disk-------------------------------------------------------------
 void RectDp::Intersection_disk(DiskDp disk){
   double r = disk.get_radius();        
-  std::vector<double> c = disk.get_center();            //parameters of the disk
-  bool fl = true;                                       // empty set
+  double* c = disk.get_center();            
+  bool fl = true;                                                    //empty set
   //-points_min_max-------------------------------------------------------------
-  std::vector<double> pnt_t = point_max(disk);
-  std::vector<double> pnt_b = point_min(disk);
+  double* pnt_max = new double[p];
+  double* pnt_min = new double[p];
+  point_max_min(pnt_max, pnt_min, disk);
   //----------------------------------------------------------------------------
   for (unsigned int k = 0; k < p; k ++){
     //--------------------------------------------------------------------------
@@ -99,8 +74,8 @@ void RectDp::Intersection_disk(DiskDp disk){
       double sum_dif_t = 0;
       for (unsigned int j = 0; j < p; j++){
         if (j != k){
-          sum_dif_b = sum_dif_b + (pnt_b[j] - c[j]) * (pnt_b[j] - c[j]);
-          sum_dif_t = sum_dif_t + (pnt_t[j] - c[j]) * (pnt_t[j] - c[j]);
+          sum_dif_b = sum_dif_b + (pnt_min[j] - c[j]) * (pnt_min[j] - c[j]);
+          sum_dif_t = sum_dif_t + (pnt_max[j] - c[j]) * (pnt_max[j] - c[j]);
         }
       }
       double db_4 = r * r - sum_dif_b;
@@ -123,25 +98,32 @@ void RectDp::Intersection_disk(DiskDp disk){
         coordinates[k][1] = min_ab(coordinates[k][1], max_ab(b2, t2));
         fl = false;
       }
-      if (fl) {coordinates[k][0] = coordinates[k][1];}  //empty set
-    }//else
+    }
   }
+  if (fl) {coordinates[0][0] = coordinates[0][1];}  //empty set
+  //memory----------------------------------------------------------------------
+  delete [] pnt_max;
+  delete [] pnt_min;
+  pnt_max  = NULL;
+  pnt_min  = NULL;
 }
 
+//Exclusion_disk----------------------------------------------------------------
 void RectDp::Exclusion_disk(DiskDp disk){
   double r = disk.get_radius();        
-  std::vector<double> c = disk.get_center(); 
-  
-  std::vector<double> pnt_t = point_max(disk);
-  std::vector<double> pnt_b = point_min(disk);
-  
+  double* c = disk.get_center(); 
+  //-points_min_max-------------------------------------------------------------
+  double* pnt_max = new double[p];
+  double* pnt_min = new double[p];
+  point_max_min(pnt_max, pnt_min, disk);
+  //----------------------------------------------------------------------------
   for (unsigned int k = 0; k < p; k ++){
     double sum_dif_b = 0;
     double sum_dif_t = 0;
     for (unsigned int j = 0; j < p; j++){
       if (j != k){
-        sum_dif_b = sum_dif_b + (pnt_b[j] - c[j]) * (pnt_b[j] - c[j]);
-        sum_dif_t = sum_dif_t + (pnt_t[j] - c[j]) * (pnt_t[j] - c[j]);
+        sum_dif_b = sum_dif_b + (pnt_min[j] - c[j]) * (pnt_min[j] - c[j]);
+        sum_dif_t = sum_dif_t + (pnt_max[j] - c[j]) * (pnt_max[j] - c[j]);
       }
     }
     double db_4 = r * r - sum_dif_b;
@@ -158,8 +140,13 @@ void RectDp::Exclusion_disk(DiskDp disk){
       t2 = c[k] + sqrt(dt_4);
       
       coordinates[k][0]  = max_ab(coordinates[k][0], min_ab(b2, t2));  
-      coordinates[k][1]  = min_ab(coordinates[k][1], max_ab(t1, t1));            
+      coordinates[k][1]  = min_ab(coordinates[k][1], max_ab(b1, t1));            
     }
   }
+  //memory----------------------------------------------------------------------
+  delete [] pnt_max;
+  delete [] pnt_min;
+  pnt_max  = NULL;
+  pnt_min  = NULL;
 }
 

@@ -4,16 +4,25 @@
 #include "math.h"
 #include "DiskDp.h"
 
-//ATTENTION: Currently, the functions "exclusion" and "intersection" are implemented only for the case dim = 2.
-//These functions need to be improved for the case dim != 2 
+/*
+ Class RectDp
+ -------------------------------------------------------------------------------
+ Description: 
+ Rectangle in p-dimension. 
+ 
+ Parameters:
+ "coordinates" - the values of two constraints for each axis;
+ "p" - dimension.
+ -------------------------------------------------------------------------------
+ */
 
 class RectDp{
 private:
-  double** coordinates;//matrix of coordinates x dim x 2,each xi =(xi0,xi1)  i = 0, p-1
+  double** coordinates;//matrix(px2) of constraints for x ,each xi =(xi0,xi1)  i = 0, p-1
   unsigned int p;
   
 public:
-  RectDp();
+  RectDp(){};
   RectDp(unsigned int dim);
   RectDp(unsigned int dim, double** coords);
   ~RectDp();
@@ -23,9 +32,8 @@ public:
   
   double min_ab(double a, double b);
   double max_ab(double a, double b);
-  
-  std::vector<double> point_min(DiskDp disk);
-  std::vector<double> point_max(DiskDp disk);
+
+  void point_max_min(double* pnt_max, double* pnt_min, DiskDp disk);
   
   bool IsEmpty_rect();
   void Exclusion_disk(DiskDp disk);

@@ -3,6 +3,7 @@
 
 #include "GausseCostDp.h"
 #include "Geom3Dp.h"
+#include "Geom2Dp.h"
 #include "Geom1Dp.h"
 
 #include "math.h"
@@ -50,7 +51,7 @@ List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
   
   if (type == 2){
     //test = true;//
-    OPDp<Geom2Dp> Y = OPDp<Geom2>(data1, penalty);
+    OPDp<Geom2Dp> Y = OPDp<Geom2Dp>(data, penalty);
     Y.algoFPOP(data, type, test);   
     res["changepoints"] = Y.get_chpts();
     res["means"] = Y.get_means();

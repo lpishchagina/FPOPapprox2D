@@ -1,24 +1,32 @@
 #ifndef DISKDP_H
 #define DISKDP_H
 
-#include <vector>
-
+/*
+ Class DiskDp
+ -------------------------------------------------------------------------------
+ Description: 
+  Disk in p-dimension. 
+ 
+ Parameters:
+  "center" - vector  of  the disk  center coordinates;
+  "radius" - value of the disk radius.
+ -------------------------------------------------------------------------------
+ */
 class DiskDp{
 private:
-  std::vector<double> center;                           // coordinates of center
+  double* center;                           
   double radius;
-  unsigned int p;
   
 public:
-  DiskDp();
+  DiskDp(){};
   DiskDp(unsigned int dim);
-  DiskDp(unsigned int dim, std::vector<double> c, double r);
+  DiskDp(unsigned int dim, double* c, double r);
+  ~DiskDp();
   
-  unsigned int get_p();
+  void InitialDiskDp(double* c, double r);
+  
   double get_radius();
-  std::vector<double> get_center();
-  bool IsEmpty_disk();
-
+  double* get_center();
 };
 
 #endif //DISKDP_H

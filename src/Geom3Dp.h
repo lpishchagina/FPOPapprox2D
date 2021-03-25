@@ -2,35 +2,46 @@
 #define GEOM3DP_H
 
 #include <iostream>
-#include <vector>
 #include <list>
 #include <iterator>
 
 #include "DiskDp.h"
 #include "GausseCostDp.h"
-
-//Class Geom3Dp
-//------------------------------------------------------------------------------
-//Description of geometry "Geom3Dp": 
-//Geometry for FPOP-Algorithm in p-dimension. 
-//Parameters of geometry:"label_t" - moment of time, "disks_t_1" - list of disks(t-1)
-//The updated geometry is a disk that approximates (disk at the moment t) minus (list of disks(t-1)) .
-//Check for emptiness - the distance between the centers of the disks. 
-//------------------------------------------------------------------------------
+/*
+Class Geom3Dp
+--------------------------------------------------------------------------------
+Description of geometry "Geom3Dp": 
+Geometry for FPOP-Algorithm in p-dimension. 
+ 
+Geometry parameters:
+  "p" - dimension;
+  "label_t" - moment in time;
+  "disks_t_1" - list of active disks at moment (t-1);
+  "fl_empty"  - "false" if geometry exists, otherwise "true".
+ 
+The updated geometry is the result of exclusion from the disk at time t of disks at time t-1.
+ 
+Check for emptiness - the distance between the centers of the disks. 
+--------------------------------------------------------------------------------
+ */
 class Geom3Dp{
 private:
-  int label_t;       //time moment 
-  std::list<DiskDp> disks_t_1;  //list of disks(t-1)
   unsigned int p;
+  unsigned int label_t;           
+  std::list<DiskDp> disks_t_1;    
+  bool fl_empty;
   
 public:
-  Geom3Dp();
+  Geom3Dp(){};
   Geom3Dp(unsigned int dim, unsigned int t);
+  
   unsigned int get_p();
-  int get_label_t();
+  unsigned int get_label_t();
+  bool get_fl_empty();
   std::list<DiskDp> get_disks_t_1();
   
-  double Dist(std::vector<double> a, std::vector<double> b);
+  
+  double Dist(double* a, double* b);
   
   void InitialGeometry(std::list<DiskDp> disks);
   void UpdateGeometry(DiskDp disk_t);
