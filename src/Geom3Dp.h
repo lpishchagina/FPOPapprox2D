@@ -33,6 +33,7 @@ private:
   
 public:
   Geom3Dp(){};
+  Geom3Dp(unsigned  int dim);
   Geom3Dp(unsigned int dim, unsigned int t);
   
   unsigned int get_p();
@@ -43,7 +44,7 @@ public:
   
   double Dist(double* a, double* b);
   
-  void InitialGeometry(std::list<DiskDp> disks);
+  void InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp> disks);
   void UpdateGeometry(DiskDp disk_t);
   bool EmptyGeometry();
 };

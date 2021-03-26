@@ -33,6 +33,7 @@ private:
   
 public:
   Geom1Dp(){};
+  Geom1Dp(unsigned  int dim);
   Geom1Dp(unsigned int dim, unsigned int t);
   
   unsigned int get_p();
@@ -40,7 +41,7 @@ public:
   RectDp get_rect_t();
   std::list<DiskDp> get_disks_t_1();
   
-  void InitialGeometry(std::list<DiskDp> disks);
+  void InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp> disks);
   void UpdateGeometry(DiskDp disk_t);
   bool EmptyGeometry();
 };

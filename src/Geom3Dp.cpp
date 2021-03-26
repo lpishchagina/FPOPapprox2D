@@ -11,6 +11,12 @@ using namespace Rcpp;
 using namespace std;
 
 //constructor-------------------------------------------------------------------
+Geom3Dp::Geom3Dp(unsigned  int dim){
+  p = dim;
+  label_t = 0;
+  disks_t_1.clear();
+  fl_empty = true;
+}
 Geom3Dp::Geom3Dp(unsigned  int dim, unsigned  int t){
   p = dim;
   label_t = t;
@@ -36,7 +42,12 @@ double Geom3Dp::Dist(double* a, double*b){
 bool Geom3Dp::EmptyGeometry(){return fl_empty;}
 
 //------------------------------------------------------------------------------
-void Geom3Dp::InitialGeometry(std::list<DiskDp> disks){disks_t_1 = disks;}
+void Geom3Dp::InitialGeometry(unsigned  int dim, unsigned  int t, std::list<DiskDp> disks){
+  p = dim;
+  label_t = t;
+  fl_empty = false;
+  disks_t_1 = disks;
+}
 
 //------------------------------------------------------------------------------
 void Geom3Dp::UpdateGeometry(DiskDp disk_t){

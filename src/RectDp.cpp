@@ -28,6 +28,8 @@ RectDp::~RectDp(){
   coordinates = NULL;
 }
 //accessory---------------------------------------------------------------------
+void RectDp::InitialRectDp(double** coords){coordinates = coords;}
+
 double** RectDp::get_coordinates(){return coordinates;}
 unsigned int RectDp::get_p(){return p;}
 

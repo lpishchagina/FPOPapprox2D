@@ -13,6 +13,13 @@
 using namespace Rcpp;
 using namespace std;
 //constructor-------------------------------------------------------------------
+Geom2Dp::Geom2Dp(unsigned int dim){
+  p = dim;
+  label_t = 0;
+  rect_t = RectDp(p);
+  disks_t_1.clear();
+}
+
 Geom2Dp::Geom2Dp(unsigned int dim, unsigned int t){
   p = dim;
   label_t = t;
@@ -32,7 +39,11 @@ bool Geom2Dp::EmptyGeometry(){return rect_t.IsEmpty_rect();}
 
 
 //------------------------------------------------------------------------------
-void Geom2Dp::InitialGeometry(std::list<DiskDp> disks){disks_t_1 = disks; }
+void Geom2Dp::InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp> disks){
+  p = dim;
+  label_t = t;
+  disks_t_1 = disks; 
+  }
 //------------------------------------------------------------------------------
 void Geom2Dp::UpdateGeometry(DiskDp disk_t){
   //Intersection

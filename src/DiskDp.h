@@ -21,6 +21,7 @@ public:
   DiskDp(){};
   DiskDp(unsigned int dim);
   DiskDp(unsigned int dim, double* c, double r);
+  
   ~DiskDp();
   
   void InitialDiskDp(double* c, double r);

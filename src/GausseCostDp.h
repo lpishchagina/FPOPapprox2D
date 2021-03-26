@@ -22,9 +22,11 @@ private:
 
 public:
   GausseCostDp(){};
+  GausseCostDp(unsigned int dim);
   GausseCostDp(unsigned int dim, unsigned int i, unsigned int t, double* si_1, double* st, double mi_1pen);
   ~GausseCostDp();
   
+  void InitialGausseCostDp(unsigned int dim, unsigned int i, unsigned int t, double* si_1, double* st, double mi_1pen);
   unsigned int get_coef() const;
   double get_coef_Var() const;
   double get_mi_1_p() const;

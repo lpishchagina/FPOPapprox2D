@@ -11,6 +11,12 @@
 using namespace Rcpp;
 using namespace std;
 //constructor-------------------------------------------------------------------
+Geom1Dp::Geom1Dp(unsigned  int dim){
+  p = dim;
+  label_t = 0;
+  rect_t = RectDp(p);
+}
+
 Geom1Dp::Geom1Dp(unsigned  int dim, unsigned  int t){
   p = dim;
   label_t = t;
@@ -29,7 +35,10 @@ std::list<DiskDp> Geom1Dp::get_disks_t_1(){
   return list_NULL;
 }
 //------------------------------------------------------------------------------
-void Geom1Dp::InitialGeometry(std::list<DiskDp> disks){}
+void Geom1Dp::InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp> disks){
+  p = dim; 
+  label_t = t;
+}
 
 void Geom1Dp::UpdateGeometry(DiskDp disk_t){rect_t.Intersection_disk(disk_t);}
 

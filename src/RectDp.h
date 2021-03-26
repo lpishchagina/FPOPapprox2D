@@ -27,6 +27,8 @@ public:
   RectDp(unsigned int dim, double** coords);
   ~RectDp();
   
+  void InitialRectDp(double** coords);
+  
   double** get_coordinates();
   unsigned int get_p();
   

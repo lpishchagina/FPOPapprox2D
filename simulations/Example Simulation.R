@@ -12,6 +12,7 @@ FPOPDp(data = matrix(c(0,0,0,0,1,1,2,2,2,2,0,0), nrow = 2), penalty = 2*log(6), 
   Data =  data_genDp(p = 2, n = 1000, chpts = c(1000), means = matrix(c (0, 0), nrow = 2), noise = 1) 
   Data
   FPOPDp(Data, penalty = 2*log(1000),  type = 3) 
+  FPOPDp(Data, penalty = 2*log(1000),  type = 1) 
    
   Data =  data_genDp(p = 3, n = 1000, chpts = c(1000), means = matrix(c (0, 0, 0), nrow = 3), noise = 1) 
   Data

@@ -7,6 +7,13 @@
 using namespace Rcpp;
 using namespace std;
 //constructor and destructor----------------------------------------------------
+GausseCostDp::GausseCostDp(unsigned int dim){
+  coef = 0;
+  mi_1_p = 0;
+  coef_Var = 0;
+  mu = new double[dim];
+}
+
 GausseCostDp::GausseCostDp(unsigned int dim, unsigned int i, unsigned int t, double* si_1, double* st, double mi_1pen){
   coef = t - i + 1;
   mi_1_p = mi_1pen;
@@ -26,6 +33,24 @@ GausseCostDp::GausseCostDp(unsigned int dim, unsigned int i, unsigned int t, dou
 
 GausseCostDp::~GausseCostDp(){delete [] mu; mu = NULL;}
 //accessory---------------------------------------------------------------------
+void GausseCostDp::InitialGausseCostDp(unsigned int dim, unsigned int i, unsigned int t, double* si_1, double* st, double mi_1pen){
+  coef = t - i + 1;
+  mi_1_p = mi_1pen;
+  
+  double sum_mu2 = 0;
+  double sum_dif_x2 = 0;
+  
+  for (unsigned int k = 0; k < dim; k++){
+    mu[k] = (st[k] - si_1[k])/coef;
+    
+    sum_mu2 = sum_mu2 + mu[k]  *mu[k];
+    sum_dif_x2 = sum_dif_x2 + (st[dim + k] - si_1[dim + k]);
+  }
+  coef_Var = sum_dif_x2 - coef * sum_mu2;
+}
+
+
+
 unsigned int GausseCostDp::get_coef() const{return coef;}
 
 double GausseCostDp::get_coef_Var() const{return coef_Var;}

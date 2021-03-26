@@ -111,36 +111,50 @@ public:
     std::ofstream test_file;                                  // candidates test
     if (test_mode == true){test_file.open("test.txt");}
     
+    GausseCostDp cost = GausseCostDp(p);
+    GausseCostDp cost_t_1 = GausseCostDp(p);
+    DiskDp disk = DiskDp(p);
+    geom = GeomX(p);
+    std::list<DiskDp> list_disk;      //list of active disks(t-1)
+    
     //Algorithm-----------------------------------------------------------------
     for (unsigned int t = 0; t < n ; t++){
       
-      Rcpp::Rcout << "Moment t = " << t << std::endl;
-      
-      std::list<DiskDp> list_disk;                   //list of active disks(t-1)
+                         
       list_disk.clear();
-      
-      GausseCostDp cost = GausseCostDp(p, t, t, sx12[t], sx12[t+1], m[t]);
+      Rcpp::Rcout << "-------t = " << t <<"-------------" <<std::endl;
+      cost.InitialGausseCostDp(p, t, t, sx12[t], sx12[t+1], m[t]);
       double min_val = cost.get_min();                       //min value of cost
       unsigned int lbl = t;                                 //best last position
       mus = cost.get_mu();                                   //means for (lbl,t)
-     
+      
       //First run: searching min------------------------------------------------
       typename std::list<GeomX>::reverse_iterator rit_geom;
       rit_geom = list_geom.rbegin();
       while(rit_geom!= list_geom.rend()){
         unsigned int u = rit_geom -> get_label_t();
         // Searching: min
-        cost = GausseCostDp(p, u, t, sx12[u], sx12[t + 1], m[u]);
+        cost.InitialGausseCostDp(p, u, t, sx12[u], sx12[t + 1], m[u]);
+        
+        Rcpp::Rcout<<"cost min ="<<cost.get_min()<<" coef="<<cost.get_coef()<<std::endl;
+        
         if( min_val >= cost.get_min()){
           lbl = u;
           min_val = cost.get_min();
           mus = cost.get_mu();
         }
         //list of active disks(t-1)
-        GausseCostDp cost_t_1 = GausseCostDp(p, u, t-1, sx12[u], sx12[t], m[u]);
+        cost_t_1.InitialGausseCostDp(p, u, t-1, sx12[u], sx12[t], m[u]);
+        
+        Rcpp::Rcout<<"cost t-1 min ="<<cost_t_1.get_min()<<" coef t_1="<<cost_t_1.get_coef()<<std::endl;
+        
         double r2 = (m[t] - m[u] - cost_t_1.get_coef_Var())/cost_t_1.get_coef();
-        DiskDp disk = DiskDp(cost_t_1.get_mu(), sqrt(r2));
+        disk.InitialDiskDp(cost_t_1.get_mu(), sqrt(r2));
+        
+        Rcpp::Rcout<<"InitialDiskDp"<<std::endl;
+        Rcpp::Rcout<<"disk.get_radius ="<<disk.get_radius()<<std::endl;
         list_disk.push_back(disk);
+        Rcpp::Rcout<<"push_back(disk)"<<std::endl;
         ++rit_geom;
       }
       //best last changepoint and means
@@ -148,32 +162,38 @@ public:
       for (unsigned int j = 0; j < p; j++){last_mean[t][j] = mus[j];} 
       //new min 
       m[t + 1] = min_val + penalty;
-      
+      Rcpp::Rcout<<"m[t + 1] ="<<m[t + 1]<<" lbl="<<lbl<<std::endl;
       //Initialisation of geometry----------------------------------------------
-      geom = GeomX(p, t); 
-      geom.InitialGeometry(list_disk);
+      
+      //geom = GeomX(p, t);
+      
+      Rcpp::Rcout<<"new geom"<<std::endl;
+     
+      geom.InitialGeometry(p,t,list_disk);
+      Rcpp::Rcout<<"list_disk size"<<geom.get_disks_t_1().size()<<std::endl;
       list_geom.push_back(geom);
-    
+      Rcpp::Rcout<<"push_back(geom)"<<std::endl;
+    /*
       //Second run: Update list of geometry-------------------------------------
       typename std::list<GeomX>::iterator it_geom;
       it_geom = list_geom.begin(); 
       while (it_geom != list_geom.end()){
         lbl = it_geom -> get_label_t();
-        cost = GausseCostDp(p, lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
+        cost.InitialGausseCostDp(p, lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
         double r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
         
         //PELT
         if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;}
         //FPOP
         if (r2 > 0){
-            DiskDp disk_lblt = DiskDp(p, cost.get_mu(), sqrt(r2));
-           it_geom -> UpdateGeometry(disk_lblt);
+            disk.InitialDiskDp(cost.get_mu(), sqrt(r2));
+           it_geom -> UpdateGeometry(disk);
           if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom;}
           else {if (test_mode == true && (type == 2 || type == 3)){ test_file << it_geom ->get_label_t() << " "<< it_geom ->get_disks_t_1().size() << " ";}}
         }//else
         ++it_geom;
       }
-       */
+      */
       if (test_mode == true){test_file << "\n";} 
     }
     if (test_mode == true){test_file.close();}
@@ -190,7 +210,7 @@ public:
     reverse(means.begin(), means.end());
     globalCost = m[n + 1] - penalty * chpts.size();
     //memory--------------------------------------------------------------------
-    for(unsigned int i = 0; i < p+1; i++) {delete(last_mean[i]);}
+    for(unsigned int i = 0; i < n; i++) {delete(last_mean[i]);}
     delete [] last_mean;
     delete [] last_chpt;
     delete [] mus;
