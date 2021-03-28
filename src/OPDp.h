@@ -49,7 +49,7 @@ private:
   double penalty; 
   
   double** sx12;                   
-  GeomX geom;                       
+  //GeomX geom;                       
   std::list<GeomX> list_geom;
   
   std::vector <unsigned int> chpts;                
@@ -57,7 +57,7 @@ private:
   double globalCost;                                
   
 public:
-  //constructor and destructor--------------------------------------------------
+  //constructor, copy and destructor********************************************
   OPDp<GeomX>(){}
 
   OPDp<GeomX> (Rcpp::NumericMatrix x, double beta){
@@ -68,12 +68,33 @@ public:
     for(unsigned int i = 0; i < n + 1; i++) {sx12[i] = new double[(2*p)];}
   }
   
+  OPDp<GeomX> (const OPDp<GeomX> &geomX){
+    p  = geomX.p;
+    n = geomX.n;
+    penalty = geomX.penalty;
+
+    list_geom = geomX.list_geom;
+    chpts = geomX.chpts;
+    means = geomX.means;
+    globalCost = geomX.globalCost;
+    
+    sx12 = new double*[n + 1]; 
+    for(unsigned int i = 0; i < n + 1; i++) {
+      sx12[i] = new double[(2*p)];
+      for (unsigned int k = 0; k < p; k++){
+        sx12[i][k] = geomX.sx12[i][k];
+        sx12[i][p + k] = geomX.sx12[i][p + k];
+      }
+    }
+  }
+    
   ~OPDp<GeomX>(){
     for(unsigned int i = 0; i < n + 1; i++) {delete(sx12[i]);}
     delete [] sx12;
     sx12 = NULL;
+    Rcpp::Rcout<<"destr OP"<<std::endl;
   }
-  //accessory-------------------------------------------------------------------
+  //accessory*******************************************************************
   std::vector <unsigned int> get_chpts() const {return chpts;}
   
   std::vector <std::vector <double>> get_means() const{return means;}
@@ -85,7 +106,7 @@ public:
   unsigned int get_p() const {return p;}
   
   double get_penalty() const {return penalty;}
-  //preprocessing---------------------------------------------------------------
+  //preprocessing***************************************************************
   double** vect_sx12(Rcpp::NumericMatrix x) {
     for (unsigned int k = 0; k < p; k++){ sx12[0][k] = 0; sx12[0][p + k] = 0;}
     for (unsigned int j = 1; j < (n + 1); j++){
@@ -96,7 +117,7 @@ public:
     }
     return(sx12);
   }
-  //algorithm FPOP--------------------------------------------------------------
+  //algorithm FPOP**************************************************************
   void algoFPOP(Rcpp::NumericMatrix x, int type, bool test_mode){
     //preprocessing-------------------------------------------------------------
     double* m = new double[n + 1];                       //globalCost = m[n+1] - chpts.size()*penalty
@@ -112,17 +133,15 @@ public:
     if (test_mode == true){test_file.open("test.txt");}
     
     GausseCostDp cost = GausseCostDp(p);
-    GausseCostDp cost_t_1 = GausseCostDp(p);
+    GeomX geom = GeomX(p);//
     DiskDp disk = DiskDp(p);
-    geom = GeomX(p);
     std::list<DiskDp> list_disk;      //list of active disks(t-1)
-    
+    list_disk.clear();
     //Algorithm-----------------------------------------------------------------
     for (unsigned int t = 0; t < n ; t++){
+  
+      Rcpp::Rcout << "MOMENT t = " << t <<"-------------" <<std::endl;
       
-                         
-      list_disk.clear();
-      Rcpp::Rcout << "-------t = " << t <<"-------------" <<std::endl;
       cost.InitialGausseCostDp(p, t, t, sx12[t], sx12[t+1], m[t]);
       double min_val = cost.get_min();                       //min value of cost
       unsigned int lbl = t;                                 //best last position
@@ -131,64 +150,68 @@ public:
       //First run: searching min------------------------------------------------
       typename std::list<GeomX>::reverse_iterator rit_geom;
       rit_geom = list_geom.rbegin();
+      
       while(rit_geom!= list_geom.rend()){
         unsigned int u = rit_geom -> get_label_t();
         // Searching: min
         cost.InitialGausseCostDp(p, u, t, sx12[u], sx12[t + 1], m[u]);
-        
-        Rcpp::Rcout<<"cost min ="<<cost.get_min()<<" coef="<<cost.get_coef()<<std::endl;
-        
         if( min_val >= cost.get_min()){
           lbl = u;
           min_val = cost.get_min();
           mus = cost.get_mu();
         }
         //list of active disks(t-1)
-        cost_t_1.InitialGausseCostDp(p, u, t-1, sx12[u], sx12[t], m[u]);
+        cost.InitialGausseCostDp(p, u, t-1, sx12[u], sx12[t], m[u]);
+        double r2 = (m[t] - m[u] - cost.get_coef_Var())/cost.get_coef();
         
-        Rcpp::Rcout<<"cost t-1 min ="<<cost_t_1.get_min()<<" coef t_1="<<cost_t_1.get_coef()<<std::endl;
-        
-        double r2 = (m[t] - m[u] - cost_t_1.get_coef_Var())/cost_t_1.get_coef();
-        disk.InitialDiskDp(cost_t_1.get_mu(), sqrt(r2));
-        
-        Rcpp::Rcout<<"InitialDiskDp"<<std::endl;
-        Rcpp::Rcout<<"disk.get_radius ="<<disk.get_radius()<<std::endl;
+        disk.InitialDiskDp(p, cost.get_mu(), sqrt(r2));
         list_disk.push_back(disk);
-        Rcpp::Rcout<<"push_back(disk)"<<std::endl;
         ++rit_geom;
       }
       //best last changepoint and means
+      
       last_chpt[t] = lbl;       
       for (unsigned int j = 0; j < p; j++){last_mean[t][j] = mus[j];} 
       //new min 
       m[t + 1] = min_val + penalty;
-      Rcpp::Rcout<<"m[t + 1] ="<<m[t + 1]<<" lbl="<<lbl<<std::endl;
+      
+      Rcpp::Rcout<<"1 STEP:lbl ="<<lbl<<" m[t + 1] ="<<m[t + 1]<<" size of disks = "<<  list_disk.size()<< std::endl;
+      
       //Initialisation of geometry----------------------------------------------
-      
-      //geom = GeomX(p, t);
-      
-      Rcpp::Rcout<<"new geom"<<std::endl;
-     
+      Rcpp::Rcout<<"2.INITIALISATION OF GEOMETRY"<<std::endl;
       geom.InitialGeometry(p,t,list_disk);
-      Rcpp::Rcout<<"list_disk size"<<geom.get_disks_t_1().size()<<std::endl;
+      list_disk.clear();
       list_geom.push_back(geom);
-      Rcpp::Rcout<<"push_back(geom)"<<std::endl;
-    /*
+     
+      /*
       //Second run: Update list of geometry-------------------------------------
+       Rcpp::Rcout<<"3 STEP"<<std::endl;
       typename std::list<GeomX>::iterator it_geom;
+      
       it_geom = list_geom.begin(); 
       while (it_geom != list_geom.end()){
         lbl = it_geom -> get_label_t();
         cost.InitialGausseCostDp(p, lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
         double r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
-        
+        Rcpp::Rcout << "r2 = " << r2 <<std::endl;
         //PELT
-        if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;}
+        if (r2 <= 0){
+          it_geom -> CleanGeometry();
+          it_geom = list_geom.erase(it_geom); 
+          --it_geom;
+          Rcpp::Rcout << "PELT "  <<std::endl;
+        }
         //FPOP
         if (r2 > 0){
-            disk.InitialDiskDp(cost.get_mu(), sqrt(r2));
-           it_geom -> UpdateGeometry(disk);
-          if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom;}
+          disk.InitialDiskDp(p, cost.get_mu(), sqrt(r2));
+          Rcpp::Rcout<<"UPDATE GEOM"<<std::endl;
+          it_geom -> UpdateGeometry(disk);
+          if (it_geom -> EmptyGeometry()){
+            it_geom -> CleanGeometry();
+            it_geom = list_geom.erase(it_geom);
+            --it_geom;
+            Rcpp::Rcout << "FPOP"  <<std::endl;
+          }
           else {if (test_mode == true && (type == 2 || type == 3)){ test_file << it_geom ->get_label_t() << " "<< it_geom ->get_disks_t_1().size() << " ";}}
         }//else
         ++it_geom;
@@ -201,8 +224,10 @@ public:
     unsigned int chp = n;
     while (chp > 0){
       chpts.push_back(chp);
+      Rcpp::Rcout<<" chp ="<<chp;
       std::vector<double> mm;
-      for (unsigned int i = 0; i < p; i++){mm.push_back(last_mean[chp-1][i]);}
+      for (unsigned int i = 0; i < p; i++){mm.push_back(last_mean[chp-1][i]);
+      }
       means.push_back(mm);
       chp = last_chpt[chp-1];
     }
@@ -210,6 +235,15 @@ public:
     reverse(means.begin(), means.end());
     globalCost = m[n + 1] - penalty * chpts.size();
     //memory--------------------------------------------------------------------
+    Rcpp::Rcout<<std::endl<<"MEMORY"<<std::endl;
+    typename std::list<GeomX>::iterator it_geom;
+    it_geom = list_geom.begin(); 
+    Rcpp::Rcout<<"CLEAN LIST OF GEOM"<<std::endl;
+    while (it_geom != list_geom.end()){
+      it_geom -> CleanGeometry();
+      ++it_geom;
+    }
+    Rcpp::Rcout<<"CLEAN vectors"<<std::endl;
     for(unsigned int i = 0; i < n; i++) {delete(last_mean[i]);}
     delete [] last_mean;
     delete [] last_chpt;
@@ -219,6 +253,7 @@ public:
     last_mean = NULL;
     last_chpt = NULL;
     mus = NULL;
+    Rcpp::Rcout<<"END Algo"<<std::endl;
   }
 };
 

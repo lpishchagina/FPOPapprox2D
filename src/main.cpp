@@ -61,10 +61,11 @@ List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
   if (type == 3){
     //test = true;//
     OPDp<Geom3Dp> Z = OPDp<Geom3Dp>(data, penalty);
-    Z.algoFPOP(data, type, test);   
+    Z.algoFPOP(data, type, test);  
     res["chpts"] = Z.get_chpts();
     res["means"] = Z.get_means();
     res["globalCost"] = Z.get_globalCost();
   }
+  Rcpp::Rcout<<"END"<<std::endl;
   return res;
 }

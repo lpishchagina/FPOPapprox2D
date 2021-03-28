@@ -16,6 +16,7 @@ Geom3Dp::Geom3Dp(unsigned  int dim){
   label_t = 0;
   disks_t_1.clear();
   fl_empty = true;
+  Rcpp::Rcout<<"--constr geom--"<<std::endl;
 }
 Geom3Dp::Geom3Dp(unsigned  int dim, unsigned  int t){
   p = dim;
@@ -23,6 +24,15 @@ Geom3Dp::Geom3Dp(unsigned  int dim, unsigned  int t){
   disks_t_1.clear();
   fl_empty = false;
 }
+
+Geom3Dp::Geom3Dp(const Geom3Dp & geom3){
+  p = geom3.p;
+  label_t = geom3.label_t;
+  disks_t_1 = geom3.disks_t_1;
+  fl_empty = geom3.fl_empty;
+  
+}
+
 //accessory---------------------------------------------------------------------
 unsigned int Geom3Dp::get_p(){return p;}
 
@@ -46,12 +56,29 @@ void Geom3Dp::InitialGeometry(unsigned  int dim, unsigned  int t, std::list<Disk
   p = dim;
   label_t = t;
   fl_empty = false;
+  
   disks_t_1 = disks;
 }
+//------------------------------------------------------------------------------
+/*void Geom3Dp::CleanGeometry(){
+  //clean disk memory
+  std::list<DiskDp>::iterator iter;
+  iter = disks_t_1.begin();
+  while( iter != disks_t_1.end()){ 
+    DiskDp disk = *iter;
+    disk.CleanDiskDp();
+    ++iter; 
+  }
+  disks_t_1.clear();// or delete disks_t_1?
+  fl_empty = true;
+  label_t = 0;
+}*/
+void Geom3Dp::CleanGeometry(){disks_t_1.clear();}
+
 
 //------------------------------------------------------------------------------
 void Geom3Dp::UpdateGeometry(DiskDp disk_t){
-  
+
   std::list<DiskDp>::iterator iter;
   double dist;
   //Remove disks
@@ -67,7 +94,6 @@ void Geom3Dp::UpdateGeometry(DiskDp disk_t){
   while( iter != disks_t_1.end()){
     DiskDp disk = *iter;
     dist = Dist(disk_t.get_center(), disk.get_center());
-   
     if (dist <= (disk.get_radius() - disk_t.get_radius())){
       fl_empty = true;
       iter = disks_t_1.end();

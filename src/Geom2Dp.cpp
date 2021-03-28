@@ -36,8 +36,13 @@ RectDp Geom2Dp::get_rect_t(){return rect_t;}
 std::list<DiskDp> Geom2Dp::get_disks_t_1(){return disks_t_1;}
 //------------------------------------------------------------------------------
 bool Geom2Dp::EmptyGeometry(){return rect_t.IsEmpty_rect();}
-
-
+//------------------------------------------------------------------------------
+void Geom2Dp::CleanGeometry(){
+  //clean rect_t memory
+  rect_t.CleanRectDp();
+  //clean disk memory
+  disks_t_1.clear();// 
+}
 //------------------------------------------------------------------------------
 void Geom2Dp::InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp> disks){
   p = dim;

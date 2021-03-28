@@ -39,7 +39,12 @@ void Geom1Dp::InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp>
   p = dim; 
   label_t = t;
 }
-
+//------------------------------------------------------------------------------
+void Geom1Dp::CleanGeometry(){
+  //clean rect_t memory
+  rect_t.CleanRectDp();
+}
+//------------------------------------------------------------------------------
 void Geom1Dp::UpdateGeometry(DiskDp disk_t){rect_t.Intersection_disk(disk_t);}
 
 bool Geom1Dp::EmptyGeometry(){return rect_t.IsEmpty_rect();}

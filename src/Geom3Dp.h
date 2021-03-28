@@ -36,6 +36,8 @@ public:
   Geom3Dp(unsigned  int dim);
   Geom3Dp(unsigned int dim, unsigned int t);
   
+  Geom3Dp(const Geom3Dp & geom3);
+  
   unsigned int get_p();
   unsigned int get_label_t();
   bool get_fl_empty();
@@ -47,5 +49,7 @@ public:
   void InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp> disks);
   void UpdateGeometry(DiskDp disk_t);
   bool EmptyGeometry();
+  
+  void CleanGeometry();
 };
 #endif //GEOM3DP_H

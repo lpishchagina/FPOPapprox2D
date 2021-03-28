@@ -21,3 +21,9 @@ FPOPDp(data = matrix(c(0,0,0,0,1,1,2,2,2,2,0,0), nrow = 2), penalty = 2*log(6), 
   Data =  data_genDp(p = 3, n = 10, chpts = c(10), means = matrix(c (0, 0, 0), nrow = 3), noise = 1) 
   Data
   FPOPDp(Data, penalty = 2*log(10),  type = 3) 
+  library(base)
+set.seed(21)
+  Data =  data_genDp(p = 3, n = 3, chpts = c(3), means = matrix(c (0, 0, 0), nrow = 3), noise = 1) 
+  Data
+  FPOPDp(Data, penalty = 2*log(4),  type = 3)   
+  

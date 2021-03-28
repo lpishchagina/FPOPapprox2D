@@ -25,9 +25,12 @@ public:
   RectDp(){};
   RectDp(unsigned int dim);
   RectDp(unsigned int dim, double** coords);
-  ~RectDp();
   
-  void InitialRectDp(double** coords);
+  RectDp(const RectDp &rect);
+  
+  void CleanRectDp();
+  
+  ~RectDp();
   
   double** get_coordinates();
   unsigned int get_p();
@@ -35,8 +38,6 @@ public:
   double min_ab(double a, double b);
   double max_ab(double a, double b);
 
-  void point_max_min(double* pnt_max, double* pnt_min, DiskDp disk);
-  
   bool IsEmpty_rect();
   void Exclusion_disk(DiskDp disk);
   void Intersection_disk(DiskDp disk);

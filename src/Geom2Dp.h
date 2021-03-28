@@ -46,5 +46,6 @@ public:
   void InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp> disks);
   void UpdateGeometry(DiskDp disk_t);
   bool EmptyGeometry();
+  void CleanGeometry();
 };
 #endif //GEOM2DP_H
