@@ -35,6 +35,7 @@ public:
   Geom3Dp(){};
   Geom3Dp(unsigned  int dim);
   Geom3Dp(unsigned int dim, unsigned int t);
+  ~Geom3Dp();
   
   Geom3Dp(const Geom3Dp & geom3);
   

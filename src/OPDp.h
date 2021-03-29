@@ -133,7 +133,7 @@ public:
     if (test_mode == true){test_file.open("test.txt");}
     
     GausseCostDp cost = GausseCostDp(p);
-    GeomX geom = GeomX(p);//
+    GeomX geom = GeomX(p);
     DiskDp disk = DiskDp(p);
     std::list<DiskDp> list_disk;      //list of active disks(t-1)
     list_disk.clear();
@@ -165,6 +165,7 @@ public:
         double r2 = (m[t] - m[u] - cost.get_coef_Var())/cost.get_coef();
         
         disk.InitialDiskDp(p, cost.get_mu(), sqrt(r2));
+        Rcpp::Rcout<<"push_back(disk)=>>"<<std::endl;
         list_disk.push_back(disk);
         ++rit_geom;
       }
@@ -180,8 +181,12 @@ public:
       //Initialisation of geometry----------------------------------------------
       Rcpp::Rcout<<"2.INITIALISATION OF GEOMETRY"<<std::endl;
       geom.InitialGeometry(p,t,list_disk);
+      Rcpp::Rcout<<"list_disk.clear()=>>"<<std::endl;
       list_disk.clear();
+      Rcpp::Rcout<<"push_back(geom)=>>"<<std::endl;
       list_geom.push_back(geom);
+      Rcpp::Rcout<<" geom.CleanGeometry=>>"<<std::endl;
+      geom.CleanGeometry();
      
       /*
       //Second run: Update list of geometry-------------------------------------
@@ -236,13 +241,8 @@ public:
     globalCost = m[n + 1] - penalty * chpts.size();
     //memory--------------------------------------------------------------------
     Rcpp::Rcout<<std::endl<<"MEMORY"<<std::endl;
-    typename std::list<GeomX>::iterator it_geom;
-    it_geom = list_geom.begin(); 
-    Rcpp::Rcout<<"CLEAN LIST OF GEOM"<<std::endl;
-    while (it_geom != list_geom.end()){
-      it_geom -> CleanGeometry();
-      ++it_geom;
-    }
+    Rcpp::Rcout<<"CLEAN LIST_GEOM"<<std::endl;
+    list_geom.clear(); //important
     Rcpp::Rcout<<"CLEAN vectors"<<std::endl;
     for(unsigned int i = 0; i < n; i++) {delete(last_mean[i]);}
     delete [] last_mean;
