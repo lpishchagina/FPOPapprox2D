@@ -6,14 +6,13 @@
 
 using namespace Rcpp;
 using namespace std;
-//constructor, copy and destructor**********************************************
+//constructor*******************************************************************
 GausseCostDp::GausseCostDp(unsigned int dim){
   p = dim;
   coef = 0;
   mi_1_p = 0;
   coef_Var = 0;
   mu = new double[p];
-  Rcpp::Rcout<<"constr cost"<< std::endl;
 }
 
 GausseCostDp::GausseCostDp(unsigned int dim, unsigned int i, unsigned int t, double* si_1, double* st, double mi_1pen){
@@ -33,7 +32,7 @@ GausseCostDp::GausseCostDp(unsigned int dim, unsigned int i, unsigned int t, dou
   }
   coef_Var = sum_dif_x2 - coef * sum_mu2;
 }
-
+//constructor copy***************r**********************************************
 GausseCostDp::GausseCostDp(const GausseCostDp &cost){
   p = cost.p;
   coef = cost.coef;
@@ -42,8 +41,8 @@ GausseCostDp::GausseCostDp(const GausseCostDp &cost){
   mu = new double[p];
   for (unsigned int k = 0; k < p; k++){mu[k] = cost.mu[k];}
 }
-
-GausseCostDp::~GausseCostDp(){delete [] mu; mu = NULL;Rcpp::Rcout<<"destr cost"<< std::endl;}
+//destructor********************************************************************
+GausseCostDp::~GausseCostDp(){delete [] mu; mu = NULL;}
 
 //InitialGausseCostDp***********************************************************
 void GausseCostDp::InitialGausseCostDp(unsigned int dim, unsigned int i, unsigned int t, double* si_1, double* st, double mi_1pen){

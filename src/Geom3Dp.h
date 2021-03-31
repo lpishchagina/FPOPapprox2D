@@ -33,10 +33,8 @@ private:
   
 public:
   Geom3Dp(){};
-  Geom3Dp(unsigned  int dim);
-  Geom3Dp(unsigned int dim, unsigned int t);
-  ~Geom3Dp();
-  
+  Geom3Dp(unsigned  int dim): p(dim), label_t(0), fl_empty(true){}
+  Geom3Dp(unsigned int dim, unsigned int t): p(dim), label_t(t), fl_empty(true){}
   Geom3Dp(const Geom3Dp & geom3);
   
   unsigned int get_p();

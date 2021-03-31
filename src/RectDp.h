@@ -18,20 +18,14 @@
 
 class RectDp{
 private:
-  double** coordinates;//matrix(px2) of constraints for x ,each xi =(xi0,xi1)  i = 0, p-1
   unsigned int p;
+  double** coordinates;//matrix(px2) of constraints for x ,each xi =(xi0,xi1)  i = 0, p-1
   
 public:
-  RectDp();
+  RectDp(): p(0), coordinates(NULL){}
   RectDp(unsigned int dim);
   RectDp(unsigned int dim, double** coords);
-  
   RectDp(const RectDp &rect);
-//  RectDp operator=(const RectDp& rect);
-//  void CleanRectDp();
-  
-  void InitialRectDp(unsigned int dim);
-  
   ~RectDp();
   
   double** get_coordinates();
@@ -43,7 +37,6 @@ public:
   bool IsEmpty_rect();
   void Exclusion_disk(DiskDp disk);
   void Intersection_disk(DiskDp disk);
-  
 };
 
 #endif //RECTDP_H

@@ -23,18 +23,14 @@ public:
   DiskDp(){};
   DiskDp(unsigned int dim);
   DiskDp(unsigned int dim, double* c, double r);
-  
   DiskDp(const DiskDp &disk);
-  
   ~DiskDp();
+  
+  void InitialDiskDp(unsigned int dim, double* c, double r);
   
   unsigned int  get_p();
   double get_radius();
   double* get_center();
-  
-  void CleanDiskDp();
-  
-  void InitialDiskDp(unsigned int dim, double* c, double r);
 };
 #endif //DISKDP_H
 //------------------------------------------------------------------------------

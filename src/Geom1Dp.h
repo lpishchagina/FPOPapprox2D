@@ -18,7 +18,7 @@
  Geometry parameters:
  "p" - dimension;
  "label_t" - moment in time;
- "rect_t" - rectangle, approximated set;
+ "rect_t" -  pointer to rectangle (approximated set);
 
  The updated geometry  is a rectangle that approximates the intersection of the rectangle and disk.
  
@@ -27,23 +27,20 @@
  */
 class Geom1Dp{
 private:
-  unsigned int label_t; 
-  RectDp rect_t;   
   unsigned int p;
+  unsigned int label_t; 
+  RectDp* rect_t;   
+  
   
 public:
-  Geom1Dp(){};
- // Geom1Dp(unsigned  int dim):
- Geom1Dp(unsigned  int dim): p(dim), label_t(0), rect_t(dim){}
-  Geom1Dp(unsigned int dim, unsigned int t);
+  Geom1Dp(): p(0), label_t(0), rect_t(0){}
+  Geom1Dp(unsigned  int dim): p(dim), label_t(0), rect_t(new RectDp(dim)){}
+  Geom1Dp(unsigned int dim, unsigned int t): p(dim), label_t(t), rect_t(new RectDp(dim)){}
   Geom1Dp(const Geom1Dp & geom1);
-  
-//  Geom1Dp operator=(const Geom1Dp& geom1);
-//  ~Geom1Dp();
+  ~Geom1Dp();
   
   unsigned int get_p();
   unsigned int get_label_t();
-  RectDp get_rect_t();
   std::list<DiskDp> get_disks_t_1();
   
   void CleanGeometry(){};

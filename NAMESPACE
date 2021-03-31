@@ -1,3 +1,5 @@
 useDynLib(FPOPapprox2D, .registration=TRUE)
 importFrom(Rcpp, evalCpp)
+importFrom("stats", "rnorm")
 exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)

@@ -7,69 +7,41 @@
 using namespace Rcpp;
 
 using namespace std;
-//constructor, copy and destructor**********************************************
-RectDp::RectDp(){
-  p = 0;
-  coordinates = nullptr; 
-}
-
+//constructor*******************************************************************
 RectDp::RectDp(unsigned int dim){
-  Rcpp::Rcout<<"consr rect=> ";
   p = dim;
   coordinates = new double*[p]; 
-  for(unsigned int i = 0; i < p; i++) {coordinates[i] = new double[2];}
   for (unsigned int i = 0; i < p; i++) {
+    coordinates[i] = new double[2];
     coordinates[i][0] = -INFINITY;
     coordinates[i][1] = INFINITY;
   }
-  Rcpp::Rcout<<" <= constr rect"<<std::endl;
 }
 
 RectDp::RectDp(unsigned int dim, double** coords){
   p = dim;
   coordinates = new double*[p]; 
-  for(unsigned int i = 0; i < p; i++) {coordinates[i] = new double[2];}
   for (unsigned int i = 0; i < p; i++) {
+    coordinates[i] = new double[2];
     coordinates[i][0] = coords[i][0];
     coordinates[i][1] = coords[i][1];
   }
 }
-
+//constructor copy**************************************************************
 RectDp::RectDp(const RectDp &rect){
-  Rcpp::Rcout<<"copy rect=> "<<std::endl;
   p = rect.p;
   coordinates = new double*[p]; 
-  for(unsigned int i = 0; i < p; i++) {coordinates[i] = new double[2];}
   for(unsigned int i = 0; i < p; i++) {
+    coordinates[i] = new double[2];
     coordinates[i][0] = rect.coordinates[i][0];
     coordinates[i][1] = rect.coordinates[i][1];
   }
-  Rcpp::Rcout<<" <= copy rect"<<std::endl;
 }
-
-/*
-RectDp RectDp::operator=(const RectDp& rect){
-  Rcpp::Rcout<<"oper = rect => "<<std::endl;
-  for(unsigned int i = 0; i < p; i++) {delete [] coordinates[i];  Rcpp::Rcout<<"!!!!!i=>"<<i<< std::endl;}
-  delete [] coordinates;
-  p = rect.p;
-  coordinates = new double*[p]; 
-  for(unsigned int i = 0; i < p; i++) {coordinates[i] = new double[2];}
-  for(unsigned int i = 0; i < p; i++) {
-    coordinates[i][0] = rect.coordinates[i][0];
-    coordinates[i][1] = rect.coordinates[i][1];
-  }
-  Rcpp::Rcout<<"<= oper = rect "<<std::endl;
-  return *this;
-}
-*/
-
+//constructor, copy and destructor**********************************************
 RectDp::~RectDp(){
-  Rcpp::Rcout<<" destr rect=>";
-  for(unsigned int i = 0; i < p; i++) {delete[]coordinates[i];  Rcpp::Rcout<<" i="<<i;}
+  for(unsigned int i = 0; i < p; i++) {delete[]coordinates[i];}
   delete[]coordinates;
   coordinates = NULL;
-  Rcpp::Rcout<<"<= destr rect";
 }
 
 //accessory*********************************************************************
@@ -79,29 +51,6 @@ unsigned int RectDp::get_p(){return p;}
 double RectDp::min_ab(double a, double b){if (a < b) {return a;} else {return b;}}
 double RectDp::max_ab(double a, double b){if (a > b) {return a;} else {return b;}}
 
-//InitialRectDp*****************************************************************
-
-void RectDp::InitialRectDp(unsigned int dim){
-  p = dim;
-  for(unsigned int i = 0; i < p; i++) {
-    coordinates[i][0] = -INFINITY;
-    coordinates[i][1] = INFINITY;
-    Rcpp::Rcout<<" INIT coordinates[i]="<<coordinates[i][0]<< coordinates[i][1]<<std::endl;
-  }
-}
-/*
-//CleanRectDp*******************************************************************
-
-void RectDp::CleanRectDp(){
-  Rcpp::Rcout<<" clear rect=>"<<std::endl;
-  for(unsigned int i = 0; i < p; i++) {  Rcpp::Rcout<<" i=>"<<i<<"p="<<p<<"coord i0= "<<coordinates[i][0]<<std::endl;delete [] coordinates[i];}
-  Rcpp::Rcout<<" 1clear rect=>"<<std::endl;
-  delete [] coordinates;
-  Rcpp::Rcout<<" 2clear rect=>"<<std::endl;
-  coordinates = NULL;
-  Rcpp::Rcout<<" clear rect"<<std::endl;
-}
-*/
 //IsEmpty_rect******************************************************************
 bool RectDp::IsEmpty_rect(){
   for (unsigned int k = 0; k < p; k++){if (coordinates[k][0] >= coordinates[k][1]){return true;}}
@@ -112,7 +61,7 @@ bool RectDp::IsEmpty_rect(){
 void RectDp::Intersection_disk(DiskDp disk){
   double r = disk.get_radius();        
   double* c = disk.get_center();            
-  //-point----------------------------------------------------------------------
+  //point_min-------------------------------------------------------------------
   double* pnt_min = new double[p];
   for (unsigned int k = 0; k < p; k++){
     pnt_min[k] = c[k];

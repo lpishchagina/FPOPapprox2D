@@ -14,21 +14,21 @@ using namespace std;
 
 //' @title FPOPDp 
 //'                                                                                                        
-//' @description Detecting changepoints using the functional pruning optimal partitioning method (fpop) in bivariate time series.                         
+//' @description Detection changepoints using the Functional Pruning Optimal Partitioning method (FPOP) in p-variate time series in a p-variable time series of length n.                         
 //'                                                                                                       
-//' @param data is a matrix of data.                               
+//' @param data is a matrix of data(p-rows x n-columns).                               
 //' @param penalty is a value of penalty (a non-negative real number).                                        
-//' @param type is a value defining the  type of pruning (1 = FPOP(intersection of sets, approximation - rectangle); 2 = FPOP(intersection of set \ union of set, approximation - rectangle); 3 = FPOP(intersection of set \ union of set, approximation -last disk)).       
+//' @param type is a value defining the  type of geometry for FPOP-pruning: type=1: ("intersection" of sets), approximation - rectangle; type=2:("intersection" of sets)"minus"("union" of sets), approximation - rectangle; type=3: (last disk)"minus"("union" of sets), approximation - disk.       
 //'                                                                                                          
 //' @return a list of  elements  = (changepoints, means, globalCost).                    
 //'  
 //' \describe{
-//' \item{\code{changepoints}}{is the vector of changepoints.}
-//' \item{\code{means}}{is the matrix of successive means for data.}
+//' \item{\code{chpts}}{is the changepoint vector that gives the last index of each segment for the p-variate time series.}
+//' \item{\code{means}}{is the list of successive means for the p-variate time series.}
 //' \item{\code{globalCost}}{is a number equal to the global cost.}
-//' }                                                                                                                                                                             #     
+//' }                                                                                                                                                                                 
 //' 
-//' @examples FPOPDp(data = matrix(c(0,0,0,0,1,1,2,2,2,2,0,0), nrow = 2), penalty = 2*log(6),  type = 1) 
+//' @examples FPOPDp(data = data_genDp(p = 3, n = 100, chpts = 100, means = matrix(c (0, 0, 0), nrow = 3), noise = 1), penalty = 2*log(100), type = 2) 
 // [[Rcpp::export]]
 List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
   //----------stop--------------------------------------------------------------
@@ -41,13 +41,10 @@ List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
   test = false;
   
   if (type == 1){
-    Rcpp::Rcout<<"constr OP=>"<<std::endl;
+    //test = true;//
     OPDp<Geom1Dp> X = OPDp<Geom1Dp>(data, penalty);
-    Rcpp::Rcout<<"<=constr OP"<<std::endl;
-    Rcpp::Rcout<<"algo FPOP=>"<<std::endl;
     X.algoFPOP(data, type, test);
-    Rcpp::Rcout<<"<=algo FPOP"<<std::endl;
-    res["changepoints"] = X.get_chpts();
+    res["chpts"] = X.get_chpts();
     res["means"] = X.get_means();
     res["globalCost"] = X.get_globalCost();
   }
@@ -56,7 +53,7 @@ List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
     //test = true;//
     OPDp<Geom2Dp> Y = OPDp<Geom2Dp>(data, penalty);
     Y.algoFPOP(data, type, test);   
-    res["changepoints"] = Y.get_chpts();
+    res["chpts"] = Y.get_chpts();
     res["means"] = Y.get_means();
     res["globalCost"] = Y.get_globalCost();
   }
@@ -69,6 +66,5 @@ List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
     res["means"] = Z.get_means();
     res["globalCost"] = Z.get_globalCost();
   }
-  Rcpp::Rcout<<"END"<<std::endl;
   return res;
 }

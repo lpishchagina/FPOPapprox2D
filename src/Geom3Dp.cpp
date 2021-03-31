@@ -10,18 +10,7 @@
 using namespace Rcpp;
 using namespace std;
 
-//constructor, copy and destructor**********************************************
-Geom3Dp::Geom3Dp(unsigned  int dim){
-  p = dim;
-  label_t = 0;
-  fl_empty = true;
-}
-Geom3Dp::Geom3Dp(unsigned  int dim, unsigned  int t){
-  p = dim;
-  label_t = t;
-  fl_empty = false;
-}
-
+//constructor copy**************r***********************************************
 Geom3Dp::Geom3Dp(const Geom3Dp & geom3){
   p = geom3.p;
   label_t = geom3.label_t;
@@ -29,8 +18,6 @@ Geom3Dp::Geom3Dp(const Geom3Dp & geom3){
   disks_t_1 = geom3.disks_t_1;
   fl_empty = geom3.fl_empty;
 }
-
-Geom3Dp::~Geom3Dp(){disks_t_1.clear();}
 
 //accessory*********************************************************************
 unsigned int Geom3Dp::get_p(){return p;}
@@ -56,7 +43,6 @@ bool Geom3Dp::EmptyGeometry(){return fl_empty;}
 
 //InitialGeometry***************************************************************
 void Geom3Dp::InitialGeometry(unsigned  int dim, unsigned  int t, std::list<DiskDp> disks){
-  p = dim;
   label_t = t;
   fl_empty = false;
   disks_t_1.clear();
@@ -66,21 +52,18 @@ void Geom3Dp::InitialGeometry(unsigned  int dim, unsigned  int t, std::list<Disk
 //UpdateGeometry****************************************************************
 void Geom3Dp::UpdateGeometry(DiskDp disk_t){
   std::list<DiskDp>::iterator iter;
-  double dist;
   //Remove disks
   iter = disks_t_1.begin();
   while( iter != disks_t_1.end()){
     DiskDp disk = *iter;
-    dist = Dist(disk_t.get_center(), disk.get_center());
-    if (dist >= (disk.get_radius() + disk_t.get_radius())){iter = disks_t_1.erase(iter);--iter;}
+    if (Dist(disk_t.get_center(), disk.get_center()) >= (disk.get_radius() + disk_t.get_radius())){iter = disks_t_1.erase(iter);--iter;}
     ++iter; 
   }
   //Exclusion
   iter = disks_t_1.begin();
   while( iter != disks_t_1.end()){
     DiskDp disk = *iter;
-    dist = Dist(disk_t.get_center(), disk.get_center());
-    if (dist <= (disk.get_radius() - disk_t.get_radius())){
+    if (Dist(disk_t.get_center(), disk.get_center()) <= (disk.get_radius() - disk_t.get_radius())){ 
       fl_empty = true;
       iter = disks_t_1.end();
     }
