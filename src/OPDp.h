@@ -186,7 +186,7 @@ public:
       list_geom.push_back(geom);
       Rcpp::Rcout<<" geom.CleanGeometry=>>"<<std::endl;
       geom.CleanGeometry();
-     /*
+     
       //Second run: Update list of geometry-------------------------------------
        Rcpp::Rcout<<"3 STEP"<<std::endl;
       typename std::list<GeomX>::iterator it_geom;
@@ -223,7 +223,7 @@ public:
           else {if (test_mode == true && (type == 2 || type == 3)){ test_file << it_geom ->get_label_t() << " "<< it_geom ->get_disks_t_1().size() << " ";}}
         }//else
         ++it_geom;
-      }*/
+      }
       if (test_mode == true){test_file << "\n";} 
     }
     if (test_mode == true){test_file.close();}
@@ -241,6 +241,7 @@ public:
     reverse(chpts.begin(), chpts.end());
     reverse(means.begin(), means.end());
     globalCost = m[n + 1] - penalty * chpts.size();
+    
     //memory--------------------------------------------------------------------
     Rcpp::Rcout<<std::endl<<"MEMORY"<<std::endl;
 

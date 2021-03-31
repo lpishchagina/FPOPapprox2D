@@ -33,7 +33,8 @@ private:
   
 public:
   Geom1Dp(){};
-  Geom1Dp(unsigned  int dim);
+ // Geom1Dp(unsigned  int dim):
+ Geom1Dp(unsigned  int dim): p(dim), label_t(0), rect_t(dim){}
   Geom1Dp(unsigned int dim, unsigned int t);
   Geom1Dp(const Geom1Dp & geom1);
   

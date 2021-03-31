@@ -12,7 +12,7 @@ using namespace Rcpp;
 using namespace std;
 
 //constructor, copy and destructor**********************************************
-
+/*
 Geom1Dp::Geom1Dp(unsigned  int dim){
   Rcpp::Rcout<<"constr geom1=> ";
   p = dim;
@@ -20,7 +20,7 @@ Geom1Dp::Geom1Dp(unsigned  int dim){
   rect_t = RectDp(p);
   Rcpp::Rcout<<" <= constr geom1 "<<std::endl;
 }
-
+*/
 Geom1Dp::Geom1Dp(unsigned  int dim, unsigned  int t){
   p = dim;
   label_t = t;
