@@ -36,5 +36,5 @@ public:
   
   void InitialDiskDp(unsigned int dim, double* c, double r);
 };
-
 #endif //DISKDP_H
+//------------------------------------------------------------------------------

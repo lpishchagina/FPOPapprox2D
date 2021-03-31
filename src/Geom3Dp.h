@@ -43,14 +43,13 @@ public:
   unsigned int get_label_t();
   bool get_fl_empty();
   std::list<DiskDp> get_disks_t_1();
-  
-  
+
   double Dist(double* a, double* b);
   
+  void CleanGeometry();
+  bool EmptyGeometry();
   void InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp> disks);
   void UpdateGeometry(DiskDp disk_t);
-  bool EmptyGeometry();
-  
-  void CleanGeometry();
 };
 #endif //GEOM3DP_H
+//------------------------------------------------------------------------------

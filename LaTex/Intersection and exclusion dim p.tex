@@ -1,0 +1,187 @@
+\documentclass{report}
+\usepackage[left=3cm,right=3cm, top=3cm,bottom=3cm,bindingoffset=0cm]{geometry}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\begin{document}
+	
+	\label{Intersection}	
+	\begin{center} 
+		\section*{void RectDp::Intersection\_disk(DiskDp disk)}
+	\end{center}
+	
+	\parindent = 0pt
+	\subsection*{Description}
+	
+	The function approximates a rectangle and a circle intersection area by horizontal and vertical lines. Basing on the intersection points of these lines, we construct a rectangle with a minimum area, which contains the intersection area of the rectangle and the circle.
+	
+	If there is no intersection, the function makes at least one of the rectangle parameters satisfies the condition: 
+	
+	\begin{equation}
+		coordinates_{i,0} \ge coordinates_{i,1} , \hspace*{5mm} i = 0:p-1.
+		\label{eq:cond1}
+	\end{equation}
+	
+	\subsection*{Input parameters:}
+	
+	\begin{itemize}
+		\item {\bfseries disk}  is the circle, the element of class {\bfseries DiskDp} 
+		
+	\end{itemize}
+	
+	\subsection*{Algorithm:}
+	
+	\subsubsection*{Preprocessing}
+	\begin{itemize}
+		\item We define:
+		
+		\begin{itemize}
+			\item the parameters of the circle {\bfseries disk}:
+			
+			\begin{equation}
+				\begin{gathered}
+					c = disk.get\_center(),\\
+					r = disk.get\_radius().
+					\label{eq:paramdisk}
+				\end{gathered}
+			\end{equation}
+			
+			\item the point $pnt\_min$ is the point of the rectangle that is  minimally distant from the center of the $disk$.
+			
+			\item vector $dx^2$(\ref{eq:diskriminant1}) is the values of a discriminant devided by  $4$ of the system (\ref{eq:sys1}) for all $k = 0:p-1$ .
+			
+			\begin{equation}
+				\begin{cases}
+					(x_k - c_k)^2 + \sum_{i=0, i \neq k}^{p-1} (x_i - c_i)^2 = r^2,\\ 
+					x_i = pnt\_min_i,\hspace*{5mm} i = 0:p-1, \hspace*{2mm}i \neq k.
+				\end{cases}
+				\label{eq:sys1}
+			\end{equation}
+			
+			
+			\begin{equation}
+				\begin{gathered}
+					dx_k^2 = r^2 - \sum_{i=0, i \neq k}^{p-1} (pnt\_min_i - c_i)^2, \hspace*{5mm} k = 0:p-1.\\
+					\label{eq:diskriminant1}
+				\end{gathered}
+			\end{equation}
+			
+		\end{itemize}
+		
+		\item if for each $k = 0:p-1$ $dx_k^2$ is positive we define the characteristics of rectangle as: 
+
+		\begin{equation}
+			\begin{cases}
+				dx_k^2 > 0,\\ 
+				x_{k0} = c_k - \sqrt {dx_k^2},\\
+				x_{k1} = c_k + \sqrt {dx_k^2}.
+				\label{eq:l1l2}
+			\end{cases}
+		\end{equation}
+	
+		\begin{equation}
+			\begin{gathered}
+				coordinates_{k,0} = \max\{coordinates_{k,0}, x_{k0}\},\\
+				coordinates_{k,1} = \min\{coordinates_{k,1},x_{k1}\}.
+			\end{gathered}
+		\end{equation}
+		
+		\item else (isn't intersection) we   define the characteristics of rectangle as:
+			\begin{equation}
+			coordinates_{0,0} = coordinates_{0,1}.
+			\label{eq:empty}
+		\end{equation}
+		
+	\end{itemize}
+	
+	\label{Difference}
+	\begin{center} 
+		\section*{void RectDp::Exclusion\_disk(DiskDp disk)}
+	\end{center}
+	\parindent = 0pt
+	\subsection*{Description}
+	
+	The function approximates a rectangle and a circle difference area by horizontal and vertical lines. Basing on the intersection points of these lines, we construct a rectangle with a minimum area, which contains the difference area of the rectangle and the circle.
+	
+	If the difference is the empty set, the function makes the rectangle with parameters that correspond to the condition (\ref{eq:cond1}).
+	
+	\subsection*{Input parameters:}
+	
+	The input of this function consists:
+	
+	\begin{itemize}	
+		\item {\bfseries disk}  is the circle, the element of class {\bfseries DiskDp} 
+	\end{itemize}
+	
+	\subsection*{Algorithm:}
+	
+	\subsubsection*{Preprocessing}
+	
+	\begin{itemize}
+		\item We define the parameters of the circle {\bfseries disk}.
+			
+		\item We  find the point $pnt\_max$ is the vertex of the rectangle that are  maximally distant from the center of the $disk$.
+			
+		\item For each $k = 0:p-1$ :
+		\begin{itemize}
+			\item  we calculate $dx_k^2$ (\ref{eq:diskriminant2})(the value of a discriminant devided by  $4$ of the system (\ref{eq:sys2})):
+			\begin{equation}
+				\begin{cases}
+					(x_k - c_k)^2 + \sum_{i=0, i \neq k}^{p-1} (x_i - c_i)^2 = r^2,\\ 
+					x_i = pnt\_max_i,\hspace*{5mm} i = 0:p-1, \hspace*{2mm}i \neq k.
+				\end{cases}
+				\label{eq:sys2}
+			\end{equation}
+				
+			\begin{equation}
+				\begin{gathered}
+					dx_k^2 = r^2 - \sum_{i=0, i \neq k}^{p-1} (pnt\_max_i - c_i)^2,\\
+					\label{eq:diskriminant2}
+				\end{gathered}
+			\end{equation}
+			
+			\item if $dx_k^2$ is positive we find the intersection points with $p-1$-planes:
+				
+			\begin{equation}
+				\begin{cases}
+					dx_k^2 > 0,\\ 
+					x_{k0} = c_k + \sqrt {dx_k^2},\\
+					x_{k1} = c_k - \sqrt {dx_k^2}.
+				\label{eq:l1l2}
+				\end{cases}
+			\end{equation}
+			We define the characteristics of rectangle as:
+			
+			\begin{itemize}
+				\item if $pnt\_max_k = coordinates_{k,1}$:	
+				\begin{equation}
+					coordinates_{k,0} = \max\{coordinates_{k,0}, x_{k0}\}. 
+					\label{eq:cond1}
+				\end{equation}
+			
+				\item if $pnt\_max_k = coordinates_{k,0}$:	
+				\begin{equation}
+					coordinates_{k,1} = \min\{coordinates_{k,1}, x_{k1}\}. 
+					\label{eq:cond2}
+				\end{equation}	
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+
+
+	\label{Empty}
+\begin{center} 
+	\section*{\bfseries bool RectDp::IsEmpty\_rect()}
+\end{center} 
+
+\subsection*{Description}
+
+The function checks the parameters of the rectangle. If the parameters are not correct, this rectangle is empty. 
+
+\subsection*{Output parameters:}
+
+The function returns a boolean value {\bfseries true} if the rectangle is empty, and {\bfseries false} if it is not empty.
+
+\subsection*{Algorithm:}
+
+If at least one of the rectangle parameters satisfies the condition  (\ref{eq:cond1}) this rectangle is empty and the function returns a boolean value {\bfseries true}, else  {\bfseries false}.
+\end{document}

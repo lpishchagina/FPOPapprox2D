@@ -22,13 +22,15 @@ private:
   unsigned int p;
   
 public:
-  RectDp(){};
+  RectDp();
   RectDp(unsigned int dim);
   RectDp(unsigned int dim, double** coords);
   
   RectDp(const RectDp &rect);
+//  RectDp operator=(const RectDp& rect);
+//  void CleanRectDp();
   
-  void CleanRectDp();
+  void InitialRectDp(unsigned int dim);
   
   ~RectDp();
   

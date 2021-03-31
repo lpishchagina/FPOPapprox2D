@@ -30,22 +30,26 @@
 class Geom2Dp{
 private:
   unsigned int p;
-  unsigned int label_t;                                 //time moment 
-  RectDp rect_t;                                          //approx rectangle
-  std::list<DiskDp> disks_t_1;                            //list of disks(t-1)
+  unsigned int label_t;                                   
+  RectDp rect_t;                                     
+  std::list<DiskDp> disks_t_1;                            
   
 public:
   Geom2Dp(){};
   Geom2Dp(unsigned int dim);
   Geom2Dp(unsigned int dim, unsigned int t);
+  Geom2Dp(const Geom2Dp & geom2);
+  ~Geom2Dp();
+  
   unsigned int get_p();
   unsigned int get_label_t();
   RectDp get_rect_t();
   std::list<DiskDp> get_disks_t_1();
 
+  void CleanGeometry();
+  bool EmptyGeometry();
   void InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp> disks);
   void UpdateGeometry(DiskDp disk_t);
-  bool EmptyGeometry();
-  void CleanGeometry();
 };
 #endif //GEOM2DP_H
+//------------------------------------------------------------------------------

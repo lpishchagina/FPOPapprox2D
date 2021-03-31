@@ -41,9 +41,12 @@ List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
   test = false;
   
   if (type == 1){
+    Rcpp::Rcout<<"constr OP=>"<<std::endl;
     OPDp<Geom1Dp> X = OPDp<Geom1Dp>(data, penalty);
-    
-    X.algoFPOP(data, type, test);     
+    Rcpp::Rcout<<"<=constr OP"<<std::endl;
+    Rcpp::Rcout<<"algo FPOP=>"<<std::endl;
+    X.algoFPOP(data, type, test);
+    Rcpp::Rcout<<"<=algo FPOP"<<std::endl;
     res["changepoints"] = X.get_chpts();
     res["means"] = X.get_means();
     res["globalCost"] = X.get_globalCost();

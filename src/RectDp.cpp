@@ -2,44 +2,76 @@
 #include "DiskDp.h"
 #include "math.h"
 #include<iostream>
+#include <Rcpp.h>
+
+using namespace Rcpp;
 
 using namespace std;
 //constructor, copy and destructor**********************************************
+RectDp::RectDp(){
+  p = 0;
+  coordinates = nullptr; 
+}
+
 RectDp::RectDp(unsigned int dim){
+  Rcpp::Rcout<<"consr rect=> ";
   p = dim;
   coordinates = new double*[p]; 
-  for(unsigned int i = 0; i < p; i++) {
-    coordinates[i] = new double[2];
+  for(unsigned int i = 0; i < p; i++) {coordinates[i] = new double[2];}
+  for (unsigned int i = 0; i < p; i++) {
     coordinates[i][0] = -INFINITY;
     coordinates[i][1] = INFINITY;
   }
+  Rcpp::Rcout<<" <= constr rect"<<std::endl;
 }
 
 RectDp::RectDp(unsigned int dim, double** coords){
   p = dim;
   coordinates = new double*[p]; 
-  for(unsigned int i = 0; i < p; i++) {
-    coordinates[i] = new double[2];
+  for(unsigned int i = 0; i < p; i++) {coordinates[i] = new double[2];}
+  for (unsigned int i = 0; i < p; i++) {
     coordinates[i][0] = coords[i][0];
     coordinates[i][1] = coords[i][1];
   }
 }
 
 RectDp::RectDp(const RectDp &rect){
+  Rcpp::Rcout<<"copy rect=> "<<std::endl;
   p = rect.p;
   coordinates = new double*[p]; 
+  for(unsigned int i = 0; i < p; i++) {coordinates[i] = new double[2];}
   for(unsigned int i = 0; i < p; i++) {
-    coordinates[i] = new double[2];
     coordinates[i][0] = rect.coordinates[i][0];
     coordinates[i][1] = rect.coordinates[i][1];
   }
+  Rcpp::Rcout<<" <= copy rect"<<std::endl;
 }
 
-RectDp::~RectDp(){
-  for(unsigned int i = 0; i < p; i++) {delete(coordinates[i]);}
+/*
+RectDp RectDp::operator=(const RectDp& rect){
+  Rcpp::Rcout<<"oper = rect => "<<std::endl;
+  for(unsigned int i = 0; i < p; i++) {delete [] coordinates[i];  Rcpp::Rcout<<"!!!!!i=>"<<i<< std::endl;}
   delete [] coordinates;
-  coordinates = NULL;
+  p = rect.p;
+  coordinates = new double*[p]; 
+  for(unsigned int i = 0; i < p; i++) {coordinates[i] = new double[2];}
+  for(unsigned int i = 0; i < p; i++) {
+    coordinates[i][0] = rect.coordinates[i][0];
+    coordinates[i][1] = rect.coordinates[i][1];
+  }
+  Rcpp::Rcout<<"<= oper = rect "<<std::endl;
+  return *this;
 }
+*/
+
+RectDp::~RectDp(){
+  Rcpp::Rcout<<" destr rect=>";
+  for(unsigned int i = 0; i < p; i++) {delete[]coordinates[i];  Rcpp::Rcout<<" i="<<i;}
+  delete[]coordinates;
+  coordinates = NULL;
+  Rcpp::Rcout<<"<= destr rect";
+}
+
 //accessory*********************************************************************
 double** RectDp::get_coordinates(){return coordinates;}
 unsigned int RectDp::get_p(){return p;}
@@ -47,13 +79,29 @@ unsigned int RectDp::get_p(){return p;}
 double RectDp::min_ab(double a, double b){if (a < b) {return a;} else {return b;}}
 double RectDp::max_ab(double a, double b){if (a > b) {return a;} else {return b;}}
 
-//CleanRectDp*******************************************************************
-void RectDp::CleanRectDp(){
-  for(unsigned int i = 0; i < p; i++) {delete(coordinates[i]);}
-  delete [] coordinates;
-  coordinates = NULL;
-}
+//InitialRectDp*****************************************************************
 
+void RectDp::InitialRectDp(unsigned int dim){
+  p = dim;
+  for(unsigned int i = 0; i < p; i++) {
+    coordinates[i][0] = -INFINITY;
+    coordinates[i][1] = INFINITY;
+    Rcpp::Rcout<<" INIT coordinates[i]="<<coordinates[i][0]<< coordinates[i][1]<<std::endl;
+  }
+}
+/*
+//CleanRectDp*******************************************************************
+
+void RectDp::CleanRectDp(){
+  Rcpp::Rcout<<" clear rect=>"<<std::endl;
+  for(unsigned int i = 0; i < p; i++) {  Rcpp::Rcout<<" i=>"<<i<<"p="<<p<<"coord i0= "<<coordinates[i][0]<<std::endl;delete [] coordinates[i];}
+  Rcpp::Rcout<<" 1clear rect=>"<<std::endl;
+  delete [] coordinates;
+  Rcpp::Rcout<<" 2clear rect=>"<<std::endl;
+  coordinates = NULL;
+  Rcpp::Rcout<<" clear rect"<<std::endl;
+}
+*/
 //IsEmpty_rect******************************************************************
 bool RectDp::IsEmpty_rect(){
   for (unsigned int k = 0; k < p; k++){if (coordinates[k][0] >= coordinates[k][1]){return true;}}
@@ -65,23 +113,25 @@ void RectDp::Intersection_disk(DiskDp disk){
   double r = disk.get_radius();        
   double* c = disk.get_center();            
   //-point----------------------------------------------------------------------
-  double* pnt = new double[p];
+  double* pnt_min = new double[p];
   for (unsigned int k = 0; k < p; k++){
-    pnt[k] = c[k];
-    if (c[k] <= coordinates[k][0]){ pnt[k] = coordinates[k][0];}
-    if (c[k] >= coordinates[k][1]){ pnt[k] = coordinates[k][1];}
+    pnt_min[k] = c[k];
+    if (c[k] <= coordinates[k][0]){ pnt_min[k] = coordinates[k][0];}
+    if (c[k] >= coordinates[k][1]){ pnt_min[k] = coordinates[k][1];}
   }
   //discriminant----------------------------------------------------------------
   double* dx2 = new double[p];
-  bool dx2kpos = true;
-  for (unsigned int k = 0; k < p; k++){
-    dx2[k] = 0;
-    for (unsigned int j = 0; j < p; j++){if (j != k){dx2[k] = dx2[k] + (pnt[j] - c[j]) * (pnt[j] - c[j]);}}
-    dx2[k] = r * r - dx2[k];
-    dx2kpos = dx2kpos && (dx2[k] > 0);
+  double dx2i = 1;
+  unsigned int i = 0;
+  while ((dx2i > 0)&&(i < p)){
+    dx2i = 0;
+    for (unsigned int j = 0; j < p; j++){if (j != i){dx2i = dx2i + (pnt_min[j] - c[j]) * (pnt_min[j] - c[j]);}}
+    dx2i = r * r - dx2i;
+    dx2[i] = dx2i;
+    ++i;
   }
   //----------------------------------------------------------------------------
-  if(!dx2kpos) {coordinates[0][0] =  coordinates[0][1];}
+  if (i != p) {coordinates[0][0] =  coordinates[0][1];}
   else{
     for (unsigned int k = 0; k < p; k++){
       coordinates[k][0] = max_ab(coordinates[k][0], c[k] - sqrt(dx2[k])); 
@@ -89,9 +139,9 @@ void RectDp::Intersection_disk(DiskDp disk){
     }
   }
   //memory----------------------------------------------------------------------
-  delete [] pnt;
+  delete [] pnt_min;
   delete [] dx2;
-  pnt = NULL;
+  pnt_min = NULL;
   dx2 = NULL;
 }
 
@@ -106,25 +156,18 @@ void RectDp::Exclusion_disk(DiskDp disk){
     else{pnt_max[k] = coordinates[k][0];}
   }
   //discriminant----------------------------------------------------------------
-  double* dx2 = new double[p];
-  bool dx2_pos = true;
   for (unsigned int k = 0; k < p; k++){
-    dx2[k] = 0;
-    for (unsigned int j = 0; j < p; j++){if (j != k){dx2[k] = dx2[k] + (pnt_max[j] - c[j]) * (pnt_max[j] - c[j]);}}
-    dx2[k] = r * r - dx2[k];
-    dx2_pos = dx2_pos && (dx2[k] > 0);
-  }
-  if (dx2_pos){
-    for(unsigned int k = 0; k < p; k++){
-      coordinates[k][0] = max_ab(coordinates[k][0], c[k] + sqrt(dx2[k])); 
-      coordinates[k][1] = min_ab(coordinates[k][1], c[k] - sqrt(dx2[k]));  
+    double dx2 = 0;
+    for (unsigned int j = 0; j < p; j++){if (j != k){dx2 = dx2 + (pnt_max[j] - c[j]) * (pnt_max[j] - c[j]);}}
+    dx2 = r * r - dx2;
+    if (dx2 > 0){
+      if (pnt_max[k] == coordinates[k][0]){coordinates[k][1] = min_ab(coordinates[k][1], c[k] - sqrt(dx2));}
+      else {coordinates[k][0] = max_ab(coordinates[k][0], c[k] + sqrt(dx2));}
     }
   }
   //memory----------------------------------------------------------------------
   delete [] pnt_max;
-  delete [] dx2;
   pnt_max = NULL;
-  dx2 = NULL;
 }
 //******************************************************************************
 

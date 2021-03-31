@@ -27,23 +27,28 @@
  */
 class Geom1Dp{
 private:
-  unsigned int p;
   unsigned int label_t; 
-  RectDp rect_t;         
+  RectDp rect_t;   
+  unsigned int p;
   
 public:
   Geom1Dp(){};
   Geom1Dp(unsigned  int dim);
   Geom1Dp(unsigned int dim, unsigned int t);
+  Geom1Dp(const Geom1Dp & geom1);
+  
+//  Geom1Dp operator=(const Geom1Dp& geom1);
+//  ~Geom1Dp();
   
   unsigned int get_p();
   unsigned int get_label_t();
   RectDp get_rect_t();
   std::list<DiskDp> get_disks_t_1();
   
+  void CleanGeometry(){};
+  bool EmptyGeometry();
   void InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp> disks);
   void UpdateGeometry(DiskDp disk_t);
-  bool EmptyGeometry();
-  void CleanGeometry();
 };
 #endif //GEOM1DP_H
+//------------------------------------------------------------------------------
