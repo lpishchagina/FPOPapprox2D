@@ -1,5 +1,5 @@
 <a id="top"></a>
-#  fpop2D Vignette
+#  FPOPapprox2D Vignette
 ### Liudmila Pishchagina
 ### April 1, 2021
 

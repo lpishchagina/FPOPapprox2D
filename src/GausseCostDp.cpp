@@ -64,7 +64,6 @@ void GausseCostDp::InitialGausseCostDp(unsigned int dim, unsigned int i, unsigne
 
 //accessory*********************************************************************
 
-
 unsigned int GausseCostDp::get_p() const{return p;}
 
 unsigned int GausseCostDp::get_coef() const{return coef;}

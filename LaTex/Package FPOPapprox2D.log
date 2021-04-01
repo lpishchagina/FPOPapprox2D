@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.2.21)  25 MAR 2021 17:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.2.21)  1 APR 2021 16:59
 entering extended mode
 **"./Package FPOPapprox2D.tex"
 ("Package FPOPapprox2D.tex"
@@ -251,7 +251,14 @@ tex.def
 File: l3backend-pdftex.def 2021-02-06 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count277
 \l__pdf_internal_box=\box49
-) ("Package FPOPapprox2D.aux")
+) ("Package FPOPapprox2D.aux"
+
+LaTeX Warning: Label `eq:l1l2' multiply defined.
+
+
+LaTeX Warning: Label `eq:cond1' multiply defined.
+
+)
 \openout1 = `"Package FPOPapprox2D.aux"'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 5.
@@ -331,35 +338,22 @@ LaTeX Info: Redefining \nameref on input line 5.
 [1
 
 {C:/Users/ludmi/AppData/Local/MiKTeX/pdftex/config/pdftex.map}] [2] [3]
-[4] [5]
-Overfull \hbox (91.70076pt too wide) in paragraph at lines 444--445
-[]\OT1/cmr/m/n/10 We de-fine the points $\OML/cmm/m/it/10 pnt[]max$ \OT1/cmr/m/
-n/10 and $\OML/cmm/m/it/10 pnt[]min$ \OT1/cmr/m/n/10 and we up-date them us-ing
- the func-tion $\OML/cmm/m/it/10 point[]max[]min\OT1/cmr/m/n/10 (\OML/cmm/m/it/
-10 pnt[]max; pnt[]min; disk\OT1/cmr/m/n/10 )$: 
- []
+[4] [5] [6] [7] [8] [9] [10] [11] ("Package FPOPapprox2D.aux")
 
-[6] [7]
-Overfull \hbox (113.923pt too wide) in paragraph at lines 588--589
-[]\OT1/cmr/m/n/10 We de-fine the points $\OML/cmm/m/it/10 pnt[]max$ \OT1/cmr/m/
-n/10 and $\OML/cmm/m/it/10 pnt[]min$ \OT1/cmr/m/n/10 and we up-date them us-ing
- the func-tion $\OML/cmm/m/it/10 point[]max[]min\OT1/cmr/m/n/10 (\OML/cmm/m/it/
-10 pnt[]max; pnt[]min; disk\OT1/cmr/m/n/10 )$
- []
+LaTeX Warning: There were multiply-defined labels.
 
-[8] [9] [10] ("Package FPOPapprox2D.aux")
 Package rerunfilecheck Info: File `"Package FPOPapprox2D".out' has not changed.
 
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 8158 strings out of 479616
- 121618 string characters out of 2865001
- 423157 words of memory out of 3000000
- 25207 multiletter control sequences out of 15000+200000
- 406576 words of font info for 38 fonts, out of 3000000 for 9000
+ 8171 strings out of 479616
+ 121804 string characters out of 2865001
+ 421212 words of memory out of 3000000
+ 25214 multiletter control sequences out of 15000+200000
+ 408849 words of font info for 46 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 71i,11n,74p,457b,507s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 71i,11n,74p,359b,467s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\ludmi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm
 1000.pk><C:/Users/ludmi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
 ts/cm/cmbx10.pfb><C:/Users/ludmi/AppData/Local/Programs/MiKTeX/fonts/type1/publ
@@ -373,9 +367,9 @@ ludmi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:
 /Users/ludmi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy1
 0.pfb><C:/Users/ludmi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
 /cm/cmsy7.pfb>
-Output written on "Package FPOPapprox2D.pdf" (10 pages, 168772 bytes).
+Output written on "Package FPOPapprox2D.pdf" (11 pages, 169334 bytes).
 PDF statistics:
- 188 PDF objects out of 1000 (max. 8388607)
- 63 named destinations out of 1000 (max. 500000)
+ 184 PDF objects out of 1000 (max. 8388607)
+ 62 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
