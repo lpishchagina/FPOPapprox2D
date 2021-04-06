@@ -59,6 +59,8 @@ bool RectDp::IsEmpty_rect(){
 
 //Intersection_disk*************************************************************
 void RectDp::Intersection_disk(DiskDp disk){
+//  for (unsigned int i = 0; i < p; i++) {Rcpp::Rcout<<"do inter c i0 ="<< coordinates[i][0] <<"i1 = "<< coordinates[i][1] <<std::endl;}
+  
   double r = disk.get_radius();        
   double* c = disk.get_center();            
   //point_min-------------------------------------------------------------------
@@ -87,6 +89,8 @@ void RectDp::Intersection_disk(DiskDp disk){
       coordinates[k][1] = min_ab(coordinates[k][1], c[k] + sqrt(dx2[k]));
     }
   }
+  
+ // for (unsigned int i = 0; i < p; i++) {Rcpp::Rcout<<"posle inter c i0 ="<< coordinates[i][0] <<"i1 = "<< coordinates[i][1] <<std::endl;  }
   //memory----------------------------------------------------------------------
   delete [] pnt_min;
   delete [] dx2;
@@ -96,6 +100,7 @@ void RectDp::Intersection_disk(DiskDp disk){
 
 //Exclusion_disk****************************************************************
 void RectDp::Exclusion_disk(DiskDp disk){
+//  for (unsigned int i = 0; i < p; i++) { Rcpp::Rcout<<"do diff c i0 ="<< coordinates[i][0] <<"i1 = "<< coordinates[i][1] <<std::endl; }
   double r = disk.get_radius();        
   double* c = disk.get_center(); 
   //-point_max------------------------------------------------------------------
@@ -114,6 +119,7 @@ void RectDp::Exclusion_disk(DiskDp disk){
       else {coordinates[k][0] = max_ab(coordinates[k][0], c[k] + sqrt(dx2));}
     }
   }
+//  for (unsigned int i = 0; i < p; i++) { Rcpp::Rcout<<"posle diff c i0 ="<< coordinates[i][0] <<"i1 = "<< coordinates[i][1] <<std::endl;}
   //memory----------------------------------------------------------------------
   delete [] pnt_max;
   pnt_max = NULL;
