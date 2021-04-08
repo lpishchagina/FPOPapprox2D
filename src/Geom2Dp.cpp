@@ -48,25 +48,15 @@ void Geom2Dp::InitialGeometry(unsigned int dim, unsigned int t, std::list<DiskDp
 void Geom2Dp::UpdateGeometry(DiskDp disk_t){
   //Intersection
   rect_t->Intersection_disk(disk_t);
-  //Remove disks
-  if(rect_t->IsEmpty_rect() == false){
-    std::list<DiskDp>::iterator iter;
-    iter = disks_t_1.begin();
-    while( iter != disks_t_1.end()){
-      DiskDp disk = *iter;
-      RectDp rect = RectDp(*rect_t);
-      rect.Intersection_disk(disk);
-      if(rect.IsEmpty_rect()){iter = disks_t_1.erase(iter); --iter;}
+  // Exclusions
+  std::list<DiskDp>::iterator iter = disks_t_1.begin();
+  while(iter != disks_t_1.end() && (!rect_t->IsEmpty_rect())){
+    if (rect_t->EmptyIntersection(*iter)) {iter = disks_t_1.erase(iter);}//isn't intersection => Remove disks 
+    else {
+      rect_t->Exclusion_disk(*iter);
       ++iter;
-    }
-    //Exclusion
-    iter = disks_t_1.begin();
-    while( iter != disks_t_1.end()){
-      DiskDp disk = *iter;
-      rect_t->Exclusion_disk(disk);
-      if(rect_t->IsEmpty_rect()){iter = disks_t_1.end();}
-      else{ ++iter;}
     }
   }
 }
-//******************************************************************************
+
+

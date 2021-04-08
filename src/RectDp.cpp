@@ -57,10 +57,29 @@ bool RectDp::IsEmpty_rect(){
   return false;
 }
 
+//EmptyIntersection*************************************************************
+bool RectDp::EmptyIntersection(DiskDp disk){
+  double* c = disk.get_center(); 
+  //point_min-------------------------------------------------------------------
+  double* pnt_min = new double[p];
+  for (unsigned int k = 0; k < p; k++){
+    pnt_min[k] = c[k];
+    if (c[k] <= coordinates[k][0]){ pnt_min[k] = coordinates[k][0];}
+    if (c[k] >= coordinates[k][1]){ pnt_min[k] = coordinates[k][1];}
+  }
+  //distance--------------------------------------------------------------------
+  double  d = 0;
+  for (unsigned int k = 0; k < p; k++){ d = d + (pnt_min[k] - c[k]) * (pnt_min[k] - c[k]);}
+  //memory----------------------------------------------------------------------
+  delete [] pnt_min;
+  pnt_min = NULL;
+  //check-----------------------------------------------------------------------
+  if (sqrt(d) >= disk.get_radius()) {return true;}
+  else {return false;}
+}
+
 //Intersection_disk*************************************************************
 void RectDp::Intersection_disk(DiskDp disk){
-//  for (unsigned int i = 0; i < p; i++) {Rcpp::Rcout<<"do inter c i0 ="<< coordinates[i][0] <<"i1 = "<< coordinates[i][1] <<std::endl;}
-  
   double r = disk.get_radius();        
   double* c = disk.get_center();            
   //point_min-------------------------------------------------------------------
@@ -100,7 +119,6 @@ void RectDp::Intersection_disk(DiskDp disk){
 
 //Exclusion_disk****************************************************************
 void RectDp::Exclusion_disk(DiskDp disk){
-//  for (unsigned int i = 0; i < p; i++) { Rcpp::Rcout<<"do diff c i0 ="<< coordinates[i][0] <<"i1 = "<< coordinates[i][1] <<std::endl; }
   double r = disk.get_radius();        
   double* c = disk.get_center(); 
   //-point_max------------------------------------------------------------------
@@ -115,11 +133,10 @@ void RectDp::Exclusion_disk(DiskDp disk){
     for (unsigned int j = 0; j < p; j++){if (j != k){dx2 = dx2 + (pnt_max[j] - c[j]) * (pnt_max[j] - c[j]);}}
     dx2 = r * r - dx2;
     if (dx2 > 0){
-      if (pnt_max[k] == coordinates[k][0]){coordinates[k][1] = min_ab(coordinates[k][1], c[k] - sqrt(dx2));}
-      else {coordinates[k][0] = max_ab(coordinates[k][0], c[k] + sqrt(dx2));}
+      if ((pnt_max[k] == coordinates[k][0]) && (coordinates[k][1] <=  c[k] + sqrt(dx2))) {coordinates[k][1] = min_ab(coordinates[k][1], c[k] - sqrt(dx2));}
+      if ((pnt_max[k] == coordinates[k][1]) && (coordinates[k][0] >=  c[k] - sqrt(dx2))) {coordinates[k][0] = max_ab(coordinates[k][0], c[k] + sqrt(dx2));}
     }
   }
-//  for (unsigned int i = 0; i < p; i++) { Rcpp::Rcout<<"posle diff c i0 ="<< coordinates[i][0] <<"i1 = "<< coordinates[i][1] <<std::endl;}
   //memory----------------------------------------------------------------------
   delete [] pnt_max;
   pnt_max = NULL;

@@ -35,17 +35,29 @@ The `data_genDp` function simulates a `p`-variate time series of length `n` with
 
 `chpts` is the changepoint vector that gives the last index of each segment.
 
-The last element of `chpts` always equals to the length of time series.
+The last element of `chpts` is always less than to the length of time series.
+
+By default, `chpts = NULL`  for the data without changepoints. 
 
 `means` matrix of successive means for the `p`-variate time series.
 
-The length of each matrix row is equal to the length of `chpts`.
+By default, `means = matrix(0, ncol = 1, nrow = p)`  for the data without changepoints. 
+
+The length of each matrix row is equal to the length of `chpts` plus one.
 
 `noise` is a variance of the time series (by default it is equal to `1`).
 
 
 ```r
-Data =  data_genDp(p = 3, n = 100, chpts = c(100), means = matrix(c (0, 0, 0), nrow = 3), noise = 1) 
+
+set.seed(13)
+
+size <- 1000
+
+Data1 =  data_genDp(p = 2, n = size) 
+
+Data2 =  data_genDp(p = 2, n = size, chpts = 500, means = matrix(c(0,0,1,1), nrow = 2), noise = 1) 
+
 ```
 ## The function FPOPDp
 
@@ -55,7 +67,7 @@ The `FPOPDp` function returns the result of the segmentation of FPOP-method usin
 
 `penalty` is the value of penalty (a non-negative real number).
 
-The `penalty` here equals to a classic `2*(noise^2)*log(n)`. 
+The `penalty` here equals to a classic `2*p*(noise^2)*log(n)`. 
 
 `type` is a value defining the  type of geometry for FPOP-pruning.
 
@@ -74,50 +86,60 @@ library(base)
 
 set.seed(13)
 
-dim <-3
+dim <-2
 
 size <- 1000
 
 sigma <- 1
 
-beta <- 2 * sigma * log(size)
+beta <- 2 * sigma * dim * log(size)
 
-Data <- data_genDp(p = dim, n = size, chpts = c(size), means = matrix(c (0, 0, 0), nrow = 3), noise = 1) 
+Data1 =  data_genDp(p = dim, n = size) 
 
-resFPOP1 <- FPOPDp(Data, penalty = beta, type = 1)
+Data2 =  data_genDp(p = dim, n = size, chpts = 500, means = matrix(c(0,0,1,1), nrow = dim), noise = 1)
 
-## resFPOP1$chpts
-## [1] 1000
-## resFPOP1$means
-## $means[[1]]
-##[1] -0.0031129231  0.0008128666  0.0146805743
-## resFPOP1$globalCost
-##[1] -13.81551
-```
+FPOPDp(Data1, penalty = beta, type = 1)
 
-```
-resFPOP2 <- FPOPDp(Data, penalty = beta, type = 2)
+FPOPDp(Data1, penalty = beta, type = 2)
 
-## resFPOP2$chpts
-## [1] 1000
-## resFPOP2$means
-## $means[[1]]
-##[1] -0.0031129231  0.0008128666  0.0146805743
-## resFPOP2$globalCost
-##[1] -13.81551
+FPOPDp(Data1, penalty = beta, type = 3)
+
+$chpts
+numeric(0)
+
+$means
+$means[[1]]
+[1] -0.0031129231  0.0008128666
+
+$globalCost
+[1] 5.172187e-231
+
+
 ```
 
 ```
-resFPOP3 <- FPOPDp(Data, penalty = beta, type = 2)
+FPOPDp(Data2, penalty = beta, type = 1)
 
-## resFPOP3$chpts
-## [1] 1000
-## resFPOP3$means
-## $means[[1]]
-##[1] -0.0031129231  0.0008128666  0.0146805743
-## resFPOP3$globalCost
-##[1] -13.81551
+FPOPDp(Data2, penalty = beta, type = 2)
+
+FPOPDp(Data2, penalty = beta, type = 3)
+
+$chpts
+[1] 500
+
+$means
+$means[[1]]
+[1] -0.01552099 -0.02517320
+
+$means[[2]]
+[1] 1.044882 0.975139
+
+
+$globalCost
+[1] -27.63102
+
 ```
+
 `chpts` is the changepoint vector that gives the last index of each segment.
 
 The last element of `chpts` always equals to the length of time series.

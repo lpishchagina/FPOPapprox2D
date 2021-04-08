@@ -202,11 +202,13 @@ public:
     unsigned int chp = n;
     while (chp > 0){
       chpts.push_back(chp);
+      means_chp.clear();
       for (unsigned int i = 0; i < p; i++){means_chp.push_back(last_mean[chp-1][i]);}
       means.push_back(means_chp);
       chp = last_chpt[chp-1];
     }
     reverse(chpts.begin(), chpts.end());
+    chpts.pop_back();
     reverse(means.begin(), means.end());
     globalCost = m[n + 1] - penalty * chpts.size();
     

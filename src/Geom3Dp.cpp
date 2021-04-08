@@ -10,7 +10,7 @@
 using namespace Rcpp;
 using namespace std;
 
-//constructor copy**************r***********************************************
+//constructor copy**************************************************************
 Geom3Dp::Geom3Dp(const Geom3Dp & geom3){
   p = geom3.p;
   label_t = geom3.label_t;
@@ -52,24 +52,19 @@ void Geom3Dp::InitialGeometry(unsigned  int dim, unsigned  int t, std::list<Disk
 //UpdateGeometry****************************************************************
 void Geom3Dp::UpdateGeometry(DiskDp disk_t){
   std::list<DiskDp>::iterator iter;
-  //Remove disks
+  double dist;
   iter = disks_t_1.begin();
   while( iter != disks_t_1.end()){
-    DiskDp disk = *iter;
-    if (Dist(disk_t.get_center(), disk.get_center()) >= (disk.get_radius() + disk_t.get_radius())){iter = disks_t_1.erase(iter);--iter;}
-    ++iter; 
-  }
-  //Exclusion
-  iter = disks_t_1.begin();
-  while( iter != disks_t_1.end()){
-    DiskDp disk = *iter;
-    if (Dist(disk_t.get_center(), disk.get_center()) <= (disk.get_radius() - disk_t.get_radius())){ 
-      fl_empty = true;
-      iter = disks_t_1.end();
+    dist = Dist(disk_t.get_center(),(*iter).get_center());
+    if (dist < ((*iter).get_radius() + disk_t.get_radius())){
+      if (dist <= ((*iter).get_radius() - disk_t.get_radius())){ //Exclusion is empty
+        fl_empty = true;
+        iter = disks_t_1.end();
+      }
+      else {++iter;}
     }
-    else{++iter;}
+    else { iter = disks_t_1.erase(iter);}//Remove disks
   }
 } 
 //******************************************************************************
-
 

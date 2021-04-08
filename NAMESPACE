@@ -1,5 +1,5 @@
 useDynLib(FPOPapprox2D, .registration=TRUE)
-importFrom(Rcpp, evalCpp)
 importFrom("stats", "rnorm")
-exportPattern("^[[:alpha:]]+")
+importFrom("graphics", "abline", "lines", "par")
 importFrom(Rcpp, evalCpp)
+exportPattern("^[[:alpha:]]+")

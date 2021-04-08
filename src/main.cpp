@@ -41,7 +41,7 @@ List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
   test = false;
   
   if (type == 1){
-  //  test = true;
+    test = true;
     OPDp<Geom1Dp> X = OPDp<Geom1Dp>(data, penalty);
     X.algoFPOP(data, type, test);
     res["chpts"] = X.get_chpts();
@@ -50,7 +50,7 @@ List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
   }
   
   if (type == 2){
-   // test = true;
+    test = true;
     OPDp<Geom2Dp> Y = OPDp<Geom2Dp>(data, penalty);
     Y.algoFPOP(data, type, test);   
     res["chpts"] = Y.get_chpts();
@@ -59,7 +59,7 @@ List FPOPDp(Rcpp::NumericMatrix data, double penalty, int type) {
   }
   
   if (type == 3){
-   // test = true;
+    test = true;
     OPDp<Geom3Dp> Z = OPDp<Geom3Dp>(data, penalty);
     Z.algoFPOP(data, type, test);  
     res["chpts"] = Z.get_chpts();
