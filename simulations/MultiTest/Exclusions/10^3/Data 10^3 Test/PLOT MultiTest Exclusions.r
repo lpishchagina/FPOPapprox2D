@@ -2,7 +2,7 @@ library(ggplot2)
 library(ggpubr)
 
 list_means<- list()
-dim <- c(2:10,12,15)
+dim <- c(2:10)
 s = "10^3"
 
 for (i in 1:length(dim)){
@@ -29,17 +29,17 @@ for (i in 1:length(list_means)){
 }
 
 frdataexcl = as.data.frame(dataexcl)
-Plot1<- ggplot(frdataexcl, aes(Time))+geom_line(aes(y = dataexcl[,2], color = "dim 2"), size = 1)+geom_line(aes(y = dataexcl[,3], color = "dim 3"), size = 1)+geom_line(aes(y = dataexcl[,4], color = "dim 4"), size = 1)+geom_line(aes(y = dataexcl[,5], color = "dim 5"), size = 1)+geom_line(aes(y = dataexcl[,6], color = "dim 6"), size = 1)+geom_line(aes(y = dataexcl[,7], color = "dim 7"), size = 1) +geom_line(aes(y = dataexcl[,8], color = "dim 8"), size = 1)+geom_line(aes(y = dataexcl[,9], color = "dim 9"), size = 1)+geom_line(aes(y = dataexcl[,10], color = "dim 10"), size = 1)+geom_line(aes(y = dataexcl[,11], color = "dim12"), size = 1)+geom_line(aes(y = dataexcl[,12], color = "dim 15"), size = 1)+labs( x = "Time", y = "Number of exclusion being considered", title ="FPOP3:Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+Plot1<- ggplot(frdataexcl, aes(Time))+geom_line(aes(y = dataexcl[,2], color = "dim 2"), size = 1)+geom_line(aes(y = dataexcl[,3], color = "dim 3"), size = 1)+geom_line(aes(y = dataexcl[,4], color = "dim 4"), size = 1)+geom_line(aes(y = dataexcl[,5], color = "dim 5"), size = 1)+geom_line(aes(y = dataexcl[,6], color = "dim 6"), size = 1)+geom_line(aes(y = dataexcl[,7], color = "dim 7"), size = 1) +geom_line(aes(y = dataexcl[,8], color = "dim 8"), size = 1)+geom_line(aes(y = dataexcl[,9], color = "dim 9"), size = 1)+geom_line(aes(y = dataexcl[,10], color = "dim 10"), size = 1)+labs( x = "Time", y = "Number of exclusion being considered", title ="FPOP3:Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
 
 png(filename = "Plot FPOP3 Exclusions data10^3.png",  width = 1500, height = 1000)
 
-ggplot(frdataexcl, aes(Time))+geom_line(aes(y = dataexcl[,2], color = "dim 2"), size = 1)+geom_line(aes(y = dataexcl[,3], color = "dim 3"), size = 1)+geom_line(aes(y = dataexcl[,4], color = "dim 4"), size = 1)+geom_line(aes(y = dataexcl[,5], color = "dim 5"), size = 1)+geom_line(aes(y = dataexcl[,6], color = "dim 6"), size = 1)+geom_line(aes(y = dataexcl[,7], color = "dim 7"), size = 1) +geom_line(aes(y = dataexcl[,8], color = "dim 8"), size = 1)+geom_line(aes(y = dataexcl[,9], color = "dim 9"), size = 1)+geom_line(aes(y = dataexcl[,10], color = "dim 10"), size = 1)+geom_line(aes(y = dataexcl[,11], color = "dim12"), size = 1)+geom_line(aes(y = dataexcl[,12], color = "dim 15"), size = 1)+labs( x = "Time", y = "Number of exclusion being considered", title ="FPOP3:Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+ggplot(frdataexcl, aes(Time))+geom_line(aes(y = dataexcl[,2], color = "dim 2"), size = 1)+geom_line(aes(y = dataexcl[,3], color = "dim 3"), size = 1)+geom_line(aes(y = dataexcl[,4], color = "dim 4"), size = 1)+geom_line(aes(y = dataexcl[,5], color = "dim 5"), size = 1)+geom_line(aes(y = dataexcl[,6], color = "dim 6"), size = 1)+geom_line(aes(y = dataexcl[,7], color = "dim 7"), size = 1) +geom_line(aes(y = dataexcl[,8], color = "dim 8"), size = 1)+geom_line(aes(y = dataexcl[,9], color = "dim 9"), size = 1)+geom_line(aes(y = dataexcl[,10], color = "dim 10"), size = 1)+labs( x = "Time", y = "Number of exclusion being considered", title ="FPOP3:Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
 
 dev.off()
 
 ############################################################################
 list_means<- list()
-dim <- c(2:10,12,15)
+dim <- c(2:10)
 s = "10^3"
 
 for (i in 1:length(dim)){
@@ -66,12 +66,12 @@ for (i in 1:length(list_means)){
 }
 
 frdataexcl2 = as.data.frame(dataexcl2)
-Plot2 <-ggplot(frdataexcl2, aes(Time))+geom_line(aes(y = dataexcl2[,2], color = "dim 2"), size = 1)+geom_line(aes(y = dataexcl2[,3], color = "dim 3"), size = 1)+geom_line(aes(y = dataexcl2[,4], color = "dim 4"), size = 1)+geom_line(aes(y = dataexcl2[,5], color = "dim 5"), size = 1)+geom_line(aes(y = dataexcl2[,6], color = "dim 6"), size = 1)+geom_line(aes(y = dataexcl2[,7], color = "dim 7"), size = 1) +geom_line(aes(y = dataexcl2[,8], color = "dim 8"), size = 1)+geom_line(aes(y = dataexcl2[,9], color = "dim 9"), size = 1)+geom_line(aes(y = dataexcl2[,10], color = "dim 10"), size = 1)+geom_line(aes(y = dataexcl2[,11], color = "dim12"), size = 1)+geom_line(aes(y = dataexcl2[,12], color = "dim 15"), size = 1)+labs( x = "Time", y = "Number of exclusion being considered", title ="FPOP2:Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+Plot2 <-ggplot(frdataexcl2, aes(Time))+geom_line(aes(y = dataexcl2[,2], color = "dim 2"), size = 1)+geom_line(aes(y = dataexcl2[,3], color = "dim 3"), size = 1)+geom_line(aes(y = dataexcl2[,4], color = "dim 4"), size = 1)+geom_line(aes(y = dataexcl2[,5], color = "dim 5"), size = 1)+geom_line(aes(y = dataexcl2[,6], color = "dim 6"), size = 1)+geom_line(aes(y = dataexcl2[,7], color = "dim 7"), size = 1) +geom_line(aes(y = dataexcl2[,8], color = "dim 8"), size = 1)+geom_line(aes(y = dataexcl2[,9], color = "dim 9"), size = 1)+geom_line(aes(y = dataexcl2[,10], color = "dim 10"), size = 1)+labs( x = "Time", y = "Number of exclusion being considered", title ="FPOP2:Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
 
 
 png(filename = "Plot FPOP2 Exclusions data10^3.png",  width = 1500, height = 1000)
 
-ggplot(frdataexcl2, aes(Time))+geom_line(aes(y = dataexcl2[,2], color = "dim 2"), size = 1)+geom_line(aes(y = dataexcl2[,3], color = "dim 3"), size = 1)+geom_line(aes(y = dataexcl2[,4], color = "dim 4"), size = 1)+geom_line(aes(y = dataexcl2[,5], color = "dim 5"), size = 1)+geom_line(aes(y = dataexcl2[,6], color = "dim 6"), size = 1)+geom_line(aes(y = dataexcl2[,7], color = "dim 7"), size = 1) +geom_line(aes(y = dataexcl2[,8], color = "dim 8"), size = 1)+geom_line(aes(y = dataexcl2[,9], color = "dim 9"), size = 1)+geom_line(aes(y = dataexcl2[,10], color = "dim 10"), size = 1)+geom_line(aes(y = dataexcl2[,11], color = "dim12"), size = 1)+geom_line(aes(y = dataexcl2[,12], color = "dim 15"), size = 1)+labs( x = "Time", y = "Number of exclusion being considered", title ="FPOP2:Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+ggplot(frdataexcl2, aes(Time))+geom_line(aes(y = dataexcl2[,2], color = "dim 2"), size = 1)+geom_line(aes(y = dataexcl2[,3], color = "dim 3"), size = 1)+geom_line(aes(y = dataexcl2[,4], color = "dim 4"), size = 1)+geom_line(aes(y = dataexcl2[,5], color = "dim 5"), size = 1)+geom_line(aes(y = dataexcl2[,6], color = "dim 6"), size = 1)+geom_line(aes(y = dataexcl2[,7], color = "dim 7"), size = 1) +geom_line(aes(y = dataexcl2[,8], color = "dim 8"), size = 1)+geom_line(aes(y = dataexcl2[,9], color = "dim 9"), size = 1)+geom_line(aes(y = dataexcl2[,10], color = "dim 10"), size = 1)+labs( x = "Time", y = "Number of exclusion being considered", title ="FPOP2:Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
 
 dev.off()
 
@@ -80,31 +80,29 @@ png(filename = "Plot FPOP Exclusions data10^3.png",  width = 1500, height = 1000
 ggarrange(Plot1,Plot2,ncol = 1)
 dev.off()
 ###############################################################################
+PLOT_FPOP = list()
+tdif = length(dataexcl2[,10]) -length(dataexcl[,10])
 
-Fdim15 = data.frame(Time,dataexcl2[,12],dataexcl[,12])
-Fdim12 = data.frame(Time,dataexcl2[,11],dataexcl[,11])
-Fdim10 = data.frame(Time,dataexcl2[,10],dataexcl[,10])
-Fdim9 = data.frame(Time,dataexcl2[,9],dataexcl[,9])
-Fdim8 = data.frame(Time,dataexcl2[,8],dataexcl[,8])
-Fdim7 = data.frame(Time,dataexcl2[,7],dataexcl[,7])
-Fdim6 = data.frame(Time,dataexcl2[,6],dataexcl[,6])
-Fdim5 = data.frame(Time,dataexcl2[,5],dataexcl[,5])
-Fdim4 = data.frame(Time,dataexcl2[,4],dataexcl[,4])
-Fdim3 = data.frame(Time,dataexcl2[,3],dataexcl[,3])
-Fdim2 = data.frame(Time,dataexcl2[,2],dataexcl[,2])
+Fdim10 = data.frame(Time,dataexcl2[,10],c(dataexcl[,10], seq(0,0,length.out = tdif)))
+Fdim9 = data.frame(Time,dataexcl2[,9],c(dataexcl[,9], seq(0,0,length.out = tdif)))
+Fdim8 = data.frame(Time,dataexcl2[,8],c(dataexcl[,8], seq(0,0,length.out = tdif)))
+Fdim7 = data.frame(Time,dataexcl2[,7],c(dataexcl[,7], seq(0,0,length.out = tdif)))
+Fdim6 = data.frame(Time,dataexcl2[,6],c(dataexcl[,6], seq(0,0,length.out = tdif)))
+Fdim5 = data.frame(Time,dataexcl2[,5],c(dataexcl[,5], seq(0,0,length.out = tdif)))
+Fdim4 = data.frame(Time,dataexcl2[,4],c(dataexcl[,4], seq(0,0,length.out = tdif)))
+Fdim3 = data.frame(Time,dataexcl2[,3],c(dataexcl[,3], seq(0,0,length.out = tdif)))
+Fdim2 = data.frame(Time,dataexcl2[,2],c(dataexcl[,2], seq(0,0,length.out = tdif)))
 
 PLOT_FPOP = list()
-PLOT_FPOP[[2]] <- ggplot(Fdim2, aes(Time))+geom_line(aes(y = dataexcl2[,2], color = "FPOP2"), size = 1)+geom_line(aes(y = dataexcl[,2], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 2: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
-PLOT_FPOP[[3]] <- ggplot(Fdim3, aes(Time))+geom_line(aes(y = dataexcl2[,3], color = "FPOP2"), size = 1)+geom_line(aes(y = dataexcl[,3], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 3: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
-PLOT_FPOP[[4]] <- ggplot(Fdim4, aes(Time))+geom_line(aes(y = dataexcl2[,4], color = "FPOP2"), size = 1)+geom_line(aes(y = dataexcl[,4], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 4: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
-PLOT_FPOP[[5]] <- ggplot(Fdim5, aes(Time))+geom_line(aes(y = dataexcl2[,5], color = "FPOP2"), size = 1)+geom_line(aes(y = dataexcl[,5], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 5: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
-PLOT_FPOP[[6]] <- ggplot(Fdim6, aes(Time))+geom_line(aes(y = dataexcl2[,6], color = "FPOP2"), size = 1)+geom_line(aes(y = dataexcl[,6], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 6: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
-PLOT_FPOP[[7]] <- ggplot(Fdim7, aes(Time))+geom_line(aes(y = dataexcl2[,7], color = "FPOP2"), size = 1)+geom_line(aes(y = dataexcl[,7], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 7: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
-PLOT_FPOP[[8]] <- ggplot(Fdim8, aes(Time))+geom_line(aes(y = dataexcl2[,8], color = "FPOP2"), size = 1)+geom_line(aes(y = dataexcl[,8], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 8: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
-PLOT_FPOP[[9]] <- ggplot(Fdim9, aes(Time))+geom_line(aes(y = dataexcl2[,9], color = "FPOP2"), size = 1)+geom_line(aes(y = dataexcl[,9], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 9: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
-PLOT_FPOP[[10]] <- ggplot(Fdim10, aes(Time))+geom_line(aes(y = dataexcl2[,10], color = "FPOP2"), size = 1)+geom_line(aes(y = dataexcl[,10], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 10: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
-PLOT_FPOP[[11]] <- ggplot(Fdim12, aes(Time))+geom_line(aes(y = dataexcl2[,11], color = "FPOP2"), size = 1)+geom_line(aes(y = dataexcl[,11], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 12: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
-PLOT_FPOP[[1]] <- ggplot(Fdim15, aes(Time))+geom_line(aes(y = dataexcl2[,12], color = "FPOP2"), size = 1)+geom_line(aes(y = dataexcl[,12], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 15 Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+PLOT_FPOP[[1]] <- ggplot(Fdim10, aes(Time))+geom_line(aes(y = Fdim10[,2], color = "FPOP2"), size = 1)+geom_line(aes(y = Fdim10[,3], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 10: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+PLOT_FPOP[[2]] <- ggplot(Fdim2, aes(Time))+geom_line(aes(y = Fdim2[,2], color = "FPOP2"), size = 1)+geom_line(aes(y = Fdim2[,3], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 2: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+PLOT_FPOP[[3]] <- ggplot(Fdim3, aes(Time))+geom_line(aes(y = Fdim3[,2], color = "FPOP2"), size = 1)+geom_line(aes(y = Fdim3[,3], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 3: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+PLOT_FPOP[[4]] <- ggplot(Fdim4, aes(Time))+geom_line(aes(y = Fdim4[,2], color = "FPOP2"), size = 1)+geom_line(aes(y = Fdim4[,3], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 4: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+PLOT_FPOP[[5]] <- ggplot(Fdim5, aes(Time))+geom_line(aes(y = Fdim5[,2], color = "FPOP2"), size = 1)+geom_line(aes(y = Fdim5[,3], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 5: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+PLOT_FPOP[[6]] <- ggplot(Fdim6, aes(Time))+geom_line(aes(y = Fdim6[,2], color = "FPOP2"), size = 1)+geom_line(aes(y = Fdim6[,3], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 6: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+PLOT_FPOP[[7]] <- ggplot(Fdim7, aes(Time))+geom_line(aes(y = Fdim7[,2], color = "FPOP2"), size = 1)+geom_line(aes(y = Fdim7[,3], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 7: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+PLOT_FPOP[[8]] <- ggplot(Fdim8, aes(Time))+geom_line(aes(y = Fdim8[,2], color = "FPOP2"), size = 1)+geom_line(aes(y = Fdim8[,3], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 8: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
+PLOT_FPOP[[9]] <- ggplot(Fdim9, aes(Time))+geom_line(aes(y = Fdim9[,2], color = "FPOP2"), size = 1)+geom_line(aes(y = Fdim9[,3], color = "FPOP3"), size = 1)+labs( x = "Time", y = "Number of exclusions being considered", title ="Dimension 9: Exclusions")+theme(legend.position = c(1, 1),legend.justification = c(1, 1))
 
 png(filename = "dim 2 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
 ggarrange(PLOT_FPOP[[2]],ncol = 1)
@@ -139,35 +137,24 @@ ggarrange(PLOT_FPOP[[9]],ncol = 1)
 dev.off()
 
 png(filename = "dim 10 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
-ggarrange(PLOT_FPOP[[10]],ncol = 1)
-dev.off()
-
-png(filename = "dim 12 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
-ggarrange(PLOT_FPOP[[11]],ncol = 1)
-dev.off()
-
-png(filename = "dim 15 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
 ggarrange(PLOT_FPOP[[1]],ncol = 1)
 dev.off()
 
-png(filename = "dim 2-15 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
+png(filename = "dim 2-10 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
 ggarrange(PLOT_FPOP[[2]],PLOT_FPOP[[3]],PLOT_FPOP[[4]],PLOT_FPOP[[5]],PLOT_FPOP[[6]],PLOT_FPOP[[7]],PLOT_FPOP[[8]],PLOT_FPOP[[9]],PLOT_FPOP[[10]],PLOT_FPOP[[11]],PLOT_FPOP[[1]],ncol = 1)
 dev.off()
 
-png(filename = "dim 2-5 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
-ggarrange(PLOT_FPOP[[2]],PLOT_FPOP[[3]],PLOT_FPOP[[4]],PLOT_FPOP[[5]],ncol = 1)
+png(filename = "dim 2,3,4 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
+ggarrange(PLOT_FPOP[[2]],PLOT_FPOP[[3]],PLOT_FPOP[[4]],ncol = 1)
 dev.off()
 
-png(filename = "dim 6-9 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
-ggarrange(PLOT_FPOP[[6]],PLOT_FPOP[[7]],PLOT_FPOP[[8]],PLOT_FPOP[[9]],ncol = 1)
+png(filename = "dim 5,6,7 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
+ggarrange(PLOT_FPOP[[5]],PLOT_FPOP[[6]],PLOT_FPOP[[7]],ncol = 1)
 dev.off()
 
-png(filename = "dim 10,12,15 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
-ggarrange(PLOT_FPOP[[10]],PLOT_FPOP[[11]],PLOT_FPOP[[1]],ncol = 1)
+png(filename = "dim 8,9,10 PLOT FPOP 10^3 MultiTest Exclusions.png",  width = 1500, height = 1000)
+ggarrange(PLOT_FPOP[[8]],PLOT_FPOP[[9]],PLOT_FPOP[[1]],ncol = 1)
 dev.off()
-
-
-
 
 
 
