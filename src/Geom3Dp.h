@@ -33,21 +33,21 @@ private:
   
 public:
   Geom3Dp(){};
-  Geom3Dp(unsigned  int dim): p(dim), label_t(0), fl_empty(true){}
-  Geom3Dp(unsigned int dim, unsigned int t): p(dim), label_t(t), fl_empty(true){}
+  Geom3Dp(unsigned  int dim): p(dim), label_t(0), fl_empty(false){}
+  Geom3Dp(unsigned int dim, unsigned int t): p(dim), label_t(t), fl_empty(false){}
   Geom3Dp(const Geom3Dp & geom3);
   
-  unsigned int get_p();
-  unsigned int get_label_t();
-  bool get_fl_empty();
-  std::list<DiskDp> get_disks_t_1();
+  unsigned int get_p() const;
+  unsigned int get_label_t()const;
+  bool get_fl_empty()const;
+  std::list<DiskDp> get_disks_t_1()const;
 
   double Dist(double* a, double* b);
   
   void CleanGeometry();
   bool EmptyGeometry();
-  void InitialGeometry(unsigned int dim, unsigned int t,std::list<DiskDp> disks);
-  void UpdateGeometry(DiskDp disk_t);
+  void InitialGeometry(unsigned int dim, unsigned int t, const std::list<DiskDp> &disks);
+  void UpdateGeometry(const DiskDp &disk_t);
 };
 #endif //GEOM3DP_H
 //------------------------------------------------------------------------------

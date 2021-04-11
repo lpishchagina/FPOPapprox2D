@@ -45,8 +45,8 @@ RectDp::~RectDp(){
 }
 
 //accessory*********************************************************************
-double** RectDp::get_coordinates(){return coordinates;}
-unsigned int RectDp::get_p(){return p;}
+double** RectDp::get_coordinates()const{return coordinates;}
+unsigned int RectDp::get_p()const{return p;}
 
 double RectDp::min_ab(double a, double b){if (a < b) {return a;} else {return b;}}
 double RectDp::max_ab(double a, double b){if (a > b) {return a;} else {return b;}}
@@ -58,7 +58,7 @@ bool RectDp::IsEmpty_rect(){
 }
 
 //EmptyIntersection*************************************************************
-bool RectDp::EmptyIntersection(DiskDp disk){
+bool RectDp::EmptyIntersection(const DiskDp &disk){
   double* c = disk.get_center(); 
   //point_min-------------------------------------------------------------------
   double* pnt_min = new double[p];
@@ -79,7 +79,7 @@ bool RectDp::EmptyIntersection(DiskDp disk){
 }
 
 //Intersection_disk*************************************************************
-void RectDp::Intersection_disk(DiskDp disk){
+void RectDp::Intersection_disk(const DiskDp &disk){
   double r = disk.get_radius();        
   double* c = disk.get_center();            
   //point_min-------------------------------------------------------------------
@@ -108,8 +108,6 @@ void RectDp::Intersection_disk(DiskDp disk){
       coordinates[k][1] = min_ab(coordinates[k][1], c[k] + sqrt(dx2[k]));
     }
   }
-  
- // for (unsigned int i = 0; i < p; i++) {Rcpp::Rcout<<"posle inter c i0 ="<< coordinates[i][0] <<"i1 = "<< coordinates[i][1] <<std::endl;  }
   //memory----------------------------------------------------------------------
   delete [] pnt_min;
   delete [] dx2;
@@ -118,9 +116,10 @@ void RectDp::Intersection_disk(DiskDp disk){
 }
 
 //Exclusion_disk****************************************************************
-void RectDp::Exclusion_disk(DiskDp disk){
+void RectDp::Exclusion_disk(const DiskDp &disk){
   double r = disk.get_radius();        
   double* c = disk.get_center(); 
+  double dx2;
   //-point_max------------------------------------------------------------------
   double* pnt_max = new double[p];
   for (unsigned int k = 0; k < p; k++){
@@ -129,7 +128,7 @@ void RectDp::Exclusion_disk(DiskDp disk){
   }
   //discriminant----------------------------------------------------------------
   for (unsigned int k = 0; k < p; k++){
-    double dx2 = 0;
+    dx2 = 0;
     for (unsigned int j = 0; j < p; j++){if (j != k){dx2 = dx2 + (pnt_max[j] - c[j]) * (pnt_max[j] - c[j]);}}
     dx2 = r * r - dx2;
     if (dx2 > 0){

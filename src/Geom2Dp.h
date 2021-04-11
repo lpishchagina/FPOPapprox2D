@@ -41,14 +41,14 @@ public:
   Geom2Dp(const Geom2Dp & geom2);
   ~Geom2Dp();
   
-  unsigned int get_p();
-  unsigned int get_label_t();
-  std::list<DiskDp> get_disks_t_1();
+  unsigned int get_p()const;
+  unsigned int get_label_t()const;
+  std::list<DiskDp> get_disks_t_1()const;
 
   void CleanGeometry();
   bool EmptyGeometry();
-  void InitialGeometry(unsigned int dim, unsigned int t, std::list<DiskDp> disks);
-  void UpdateGeometry(DiskDp disk_t);
+  void InitialGeometry(unsigned int dim, unsigned int t, const std::list<DiskDp> &disks);
+  void UpdateGeometry(const DiskDp &disk_t);
 };
 #endif //GEOM2DP_H
 //------------------------------------------------------------------------------

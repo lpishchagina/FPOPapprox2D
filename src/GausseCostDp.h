@@ -31,7 +31,7 @@ public:
   
   ~GausseCostDp();
   
-  void InitialGausseCostDp(unsigned int dim, unsigned int i, unsigned int t, double* si_1, double* st, double mi_1pen);
+  void InitialGausseCostDp(unsigned int dim, unsigned int i, unsigned int t, double* &si_1, double* &st, double mi_1pen);
   unsigned int get_p() const;
   unsigned int get_coef() const;
   double get_coef_Var() const;

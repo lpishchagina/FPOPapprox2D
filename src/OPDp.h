@@ -130,20 +130,21 @@ public:
     
     std::list<GeomX> list_geom;                     // list of active geometries
     std::list<DiskDp> list_disk;                     //list of active disks(t-1)
-    
+    double min_val;
+    double r2;
+    unsigned int lbl;
+    unsigned int u;
     //Algorithm-----------------------------------------------------------------
     for (unsigned int t = 0; t < n; t++){
       cost.InitialGausseCostDp(p, t, t, sx12[t], sx12[t+1], m[t]);
-      double min_val = cost.get_min();                       //min value of cost
-      unsigned int lbl = t;                                 //best last position
+      min_val = cost.get_min();                       //min value of cost
+      lbl = t;                                 //best last position
       for (unsigned j = 0; j < p; j++){mus[j] = cost.get_mu()[j];}
       
       //First run: searching min------------------------------------------------
-      typename std::list<GeomX>::reverse_iterator rit_geom;
-      rit_geom = list_geom.rbegin();
+      typename std::list<GeomX>::reverse_iterator rit_geom = list_geom.rbegin();
       while(rit_geom != list_geom.rend()){
-        
-        unsigned int u = rit_geom -> get_label_t();
+        u = rit_geom -> get_label_t();
         // Searching: min
         cost.InitialGausseCostDp(p, u, t, sx12[u], sx12[t + 1], m[u]);
         if( min_val >= cost.get_min()){
@@ -153,7 +154,7 @@ public:
         }
         //list of active disks(t-1)
         cost.InitialGausseCostDp(p, u, t-1, sx12[u], sx12[t], m[u]);
-        double r2 = (m[t] - m[u] - cost.get_coef_Var())/cost.get_coef();
+        r2 = (m[t] - m[u] - cost.get_coef_Var())/cost.get_coef();
         disk.InitialDiskDp(p, cost.get_mu(), sqrt(r2));
         list_disk.push_back(disk);
         
@@ -171,12 +172,11 @@ public:
       list_geom.push_back(geom);
       
       //Second run: Update list of geometry-------------------------------------
-      typename std::list<GeomX>::iterator it_geom;
-      it_geom = list_geom.begin(); 
+      typename std::list<GeomX>::iterator it_geom = list_geom.begin(); 
       while (it_geom != list_geom.end()){
         lbl = it_geom->get_label_t();
         cost.InitialGausseCostDp(p, lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
-        double r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
+        r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
         //Pruning "PELT"
         if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;}
         //Pruning "FPOP"

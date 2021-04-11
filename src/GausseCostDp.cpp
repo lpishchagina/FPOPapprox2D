@@ -45,7 +45,7 @@ GausseCostDp::GausseCostDp(const GausseCostDp &cost){
 GausseCostDp::~GausseCostDp(){delete [] mu; mu = NULL;}
 
 //InitialGausseCostDp***********************************************************
-void GausseCostDp::InitialGausseCostDp(unsigned int dim, unsigned int i, unsigned int t, double* si_1, double* st, double mi_1pen){
+void GausseCostDp::InitialGausseCostDp(unsigned int dim, unsigned int i, unsigned int t, double* &si_1, double* &st, double mi_1pen){
   p = dim;
   coef = t - i + 1;
   mi_1_p = mi_1pen;

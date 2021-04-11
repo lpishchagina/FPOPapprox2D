@@ -31,11 +31,11 @@ DiskDp::DiskDp(const DiskDp &disk){
 DiskDp::~DiskDp(){delete [] center; center = NULL;}
 
 //accessory*********************************************************************
-unsigned int  DiskDp::get_p(){return p;}
+unsigned int  DiskDp::get_p()const{return p;}
 
-double DiskDp::get_radius() {return radius;}
+double DiskDp::get_radius() const{return radius;}
 
-double* DiskDp::get_center(){return center;}
+double* DiskDp::get_center()const{return center;}
 //InitialDiskDp*****************************************************************
 void DiskDp::InitialDiskDp(unsigned int dim, double* c, double r){
   p = dim;

@@ -28,9 +28,9 @@ public:
   
   void InitialDiskDp(unsigned int dim, double* c, double r);
   
-  unsigned int  get_p();
-  double get_radius();
-  double* get_center();
+  unsigned int  get_p()const;
+  double get_radius() const;
+  double* get_center()const;
 };
 #endif //DISKDP_H
 //------------------------------------------------------------------------------

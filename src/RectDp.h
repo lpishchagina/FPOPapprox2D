@@ -28,17 +28,17 @@ public:
   RectDp(const RectDp &rect);
   ~RectDp();
   
-  double** get_coordinates();
-  unsigned int get_p();
+  double** get_coordinates()const;
+  unsigned int get_p()const;
   
   double min_ab(double a, double b);
   double max_ab(double a, double b);
   
-  bool EmptyIntersection(DiskDp disk);
+  bool EmptyIntersection(const DiskDp &disk);
 
   bool IsEmpty_rect();
-  void Exclusion_disk(DiskDp disk);
-  void Intersection_disk(DiskDp disk);
+  void Exclusion_disk(const DiskDp &disk);
+  void Intersection_disk(const DiskDp &disk);
 };
 
 #endif //RECTDP_H
