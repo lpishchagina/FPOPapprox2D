@@ -113,7 +113,7 @@ public:
   //algorithm FPOP**************************************************************
   void algoFPOP(Rcpp::NumericMatrix x, int type, bool test_mode){
     //preprocessing-------------------------------------------------------------
-    double* m = new double[n + 1];                       //globalCost = m[n+1] - chpts.size()*penalty
+    double* m = new double[n + 1];                       //globalCost = m[n] - chpts.size()*penalty
     double* mus = new double[p];                         //values of temporary means 
     unsigned int* last_chpt = new unsigned int[n];       //vector of the best last changepoints 
     double** last_mean = new double*[n];                 //matrix (nxp) of means for the best last changepoints
@@ -199,6 +199,7 @@ public:
     
     //Result vectors------------------------------------------------------------
     std::vector<double> means_chp;
+
     unsigned int chp = n;
     while (chp > 0){
       chpts.push_back(chp);
@@ -208,9 +209,10 @@ public:
       chp = last_chpt[chp-1];
     }
     reverse(chpts.begin(), chpts.end());
+    globalCost = m[n] - penalty * chpts.size();
     chpts.pop_back();
     reverse(means.begin(), means.end());
-    globalCost = m[n + 1] - penalty * chpts.size();
+    
     
     //memory--------------------------------------------------------------------
     for(unsigned int i = 0; i < n; i++) {delete(last_mean[i]);}
